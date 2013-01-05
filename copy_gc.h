@@ -21,6 +21,7 @@ struct big_bdescr{
 	unsigned int nblocks;
 	unsigned int size;
 	unsigned int nptrs;
+	unsigned char used;
 };
 
 struct single_bdescr{

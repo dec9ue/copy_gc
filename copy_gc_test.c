@@ -28,6 +28,11 @@ int main(int argc,char** argv){
 	printf("alloc : %08x\n",(unsigned int)ptr);
 	ptr = mem_allocate(arena, 1000000, 10);
 	printf("alloc : %08x\n",(unsigned int)ptr);
+	int i;
+	for(i=0;i<20;i++){
+		ptr = mem_allocate(arena, 245, 10);
+		printf("alloc : %08x\n",(unsigned int)ptr);
+	}
 	/*  */
 	return 0;
 }

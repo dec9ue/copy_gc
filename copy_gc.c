@@ -4,7 +4,8 @@
 
 #define debug(x,...) printf(x,__VA_ARGS__)
 
-#define WORDS_OF(type)   (((sizeof(type)-1)/sizeof(void*))+1)
+#define WORDS_OF(v)   (((v-1)/sizeof(void*))+1)
+#define WORDS_OF_TYPE(type)   WORDS_OF(sizeof(type))
 
 /*
  *******************************
@@ -140,13 +141,13 @@ struct single_bdescr* find_current_single_block(struct s_arena* arena){
 	if(res == NULL){
 		res = find_new_single_block(arena);
 		SLIST_INSERT_HEAD(&(arena->blocks),(struct bdescr*)res,link);
-		arena->cur_words = WORDS_OF(struct single_bdescr);
+		arena->cur_words = WORDS_OF_TYPE(struct single_bdescr);
 	}
 	return res;
 }
 void prepend_new_single_block(struct s_arena* arena){
 	struct single_bdescr* block = find_new_single_block(arena);
-	arena->cur_words = WORDS_OF(struct single_bdescr);
+	arena->cur_words = WORDS_OF_TYPE(struct single_bdescr);
 	SLIST_INSERT_HEAD(&(arena->blocks),(struct bdescr*)block,link);
 }
 
@@ -183,48 +184,61 @@ void free_big_block(struct s_arena* arena,struct big_bdescr* block){
 #define PTR_BITS(x)   ((void*)(((unsigned int)x) & ~(0x3)))
 #define BLOCK_TYPE(x) (((bdescr*)GET_BLOCK(x))->type)
 
-void mem_add_root(struct s_arena* arena, void* root){
+/*
+ *******************************
+ * High Level Allocators & GC
+ *******************************
+ */
+
+static void* mem_big_allocate(struct s_arena* arena, size_t size, unsigned int nptrs){
+	/* TODO THIS MAY CONATIN ALIGNMENT BUG */
+	size_t size_in_words = WORDS_OF(size);
+	unsigned int block_counts = ((WORDS_OF_TYPE(struct big_bdescr)+size_in_words-1)*sizeof(void*))/BLOCK_SIZE + 1;
+	debug("%s big_block size: %d block_counts : %d\n",__FUNCTION__,size,block_counts);
+	debug("%s big_block size: %d size_in_words : %d\n",__FUNCTION__,size,size_in_words);
+	struct big_bdescr* big_block = find_new_big_blocks(arena,block_counts);
+	big_block-> size = size_in_words;
+	big_block->nptrs = nptrs;
+	return sizeof(struct big_bdescr) + (unsigned char*)big_block;
+}
+
+static void* mem_small_allocate(struct s_arena* arena, size_t size, unsigned int nptrs){
+	/* TODO THIS MAY CONATIN ALIGNMENT BUG */
+	void* ptr;
+ 	struct single_bdescr* single_block = find_current_single_block(arena);
+	const int block_offset_words = WORDS_OF_TYPE(struct single_bdescr);
+	size_t size_in_words = WORDS_OF(size);
+
+	if((arena->cur_words + size +1)*sizeof(void*) > BLOCK_SIZE){
+		prepend_new_single_block(arena);
+ 		single_block = find_current_single_block(arena);
+	}
+	ptr = ((void*)single_block) + ((arena->cur_words) +1) * sizeof(void*);
+	arena->cur_words += size_in_words + 1;
+	if((arena->cur_words + 2)*sizeof(void*) + block_offset_words > BLOCK_SIZE){
+		prepend_new_single_block(arena);
+ 		single_block = find_current_single_block(arena);
+	}
+	debug("%s small_block size : %d size_in_words : %d\n",__FUNCTION__,size,size_in_words);
+	return ptr;
 }
 
 /* here , size_t size in bytes , not words */
 void* mem_allocate(struct s_arena* arena, size_t size, unsigned int nptrs){
 	void* ptr;
-	size_t size_in_words = WORDS_OF(size);
 	if( size > BIG_THREASHOLD){
-		/* BIG */
-		/* TODO THIS MAY CONATIN ALIGNMENT BUG */
-		unsigned int block_counts = ((WORDS_OF(struct big_bdescr)+size_in_words-1)*sizeof(void*))/BLOCK_SIZE + 1;
-		debug("%s big_block size: %d block_counts : %d\n",__FUNCTION__,size,block_counts);
-		struct big_bdescr* big_block = find_new_big_blocks(arena,block_counts);
-		big_block-> size = size_in_words;
-		big_block->nptrs = nptrs;
-		ptr = sizeof(struct big_bdescr) + (unsigned char*)big_block;
+		ptr = mem_big_allocate(arena,size,nptrs);
 	}else{
-		/* TODO THIS MAY CONATIN ALIGNMENT BUG */
- 		struct single_bdescr* single_block = find_current_single_block(arena);
-		const int block_offset_words = WORDS_OF(struct single_bdescr);
-
-		if((arena->cur_words + size +1)*sizeof(void*) > BLOCK_SIZE){
-			prepend_new_single_block(arena);
- 			single_block = find_current_single_block(arena);
-		}
-		/* ?? why i must add multiple of sizeof(void*)? */
-		ptr = ((void*)single_block) + ((arena->cur_words) +1) *sizeof(void*);
-		arena->cur_words += size_in_words + 1;
-		if((arena->cur_words + 2)*sizeof(void*) + block_offset_words > BLOCK_SIZE){
-			prepend_new_single_block(arena);
- 			single_block = find_current_single_block(arena);
-		}
-		debug("%s small_block size : %d size_in_words : %d\n",__FUNCTION__,size,size_in_words);
+		ptr = mem_small_allocate(arena,size,nptrs);
 	}
 	return (void*)ptr;
 }
 
 void* mem_allocate_with_finalizer(struct s_arena* arena, size_t size, unsigned int nptrs,void (*finalizer)()){
-	void* ptr;
 	/* BIG */
 	/* TODO THIS MAY CONATIN ALIGNMENT BUG */
 	/* TODO ADD FILNALIZER SUPPORT */
+	void* ptr;
 	unsigned int block_counts = (sizeof(struct big_bdescr)+sizeof(void*)*size-1)/BLOCK_SIZE + 1;
 	struct big_bdescr* big_block = find_new_big_blocks(arena,block_counts);
 	big_block-> size = size;
@@ -233,10 +247,28 @@ void* mem_allocate_with_finalizer(struct s_arena* arena, size_t size, unsigned i
 	return ptr;
 }
 
+/*
+ *******************************
+ * GC
+ *******************************
+ */
+
+void mem_add_root(struct s_arena* arena, void* root){
+	arena->root = root;
+}
+
 void perform_gc(struct s_arena* arena){
 }
 
-void evacuate(void** src, void *obj, struct single_bdescr* to_space)
-{
+void evacuate_small(void** src, void *obj, struct single_bdescr* to_space) {
+}
+
+void scavenge_small(void* obj){
+}
+
+void scavenge_big(void* obj){
+}
+
+void mark_big(void* obj){
 }
 
