@@ -12,7 +12,10 @@ enum e_descr_type {
 };
 
 struct bdescr{
-	SLIST_ENTRY(bdescr) link;
+	union{
+		SLIST_ENTRY(bdescr) list;
+		STAILQ_ENTRY(bdescr) tailq;
+	}link;
 	enum e_descr_type type;
 };
 
@@ -26,6 +29,7 @@ struct big_bdescr{
 
 struct single_bdescr{
 	struct bdescr bdescr;
+	unsigned int cur_words;
 };
 
 struct s_arena{
@@ -35,7 +39,6 @@ struct s_arena{
 	SLIST_HEAD( arena_big_bdescr1   , bdescr) big_blocks;
 	void* root;
 	void* stable_ptrs;
-	unsigned int cur_words;
 };
 
 extern struct s_arena* new_arena();

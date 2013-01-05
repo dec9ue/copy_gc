@@ -96,6 +96,7 @@ void* new_blocks(struct s_arena* arena,size_t count){
 
 void init_single_block(struct single_bdescr* new_block){
 	new_block->bdescr.type = E_SINGLE;
+	new_block->cur_words = WORDS_OF_TYPE(struct single_bdescr);
 }
 
 struct single_bdescr* new_single_block(struct s_arena* arena){
@@ -130,7 +131,7 @@ struct single_bdescr* find_new_single_block(struct s_arena* arena){
 	if(res == NULL){
 		res = new_single_block(arena);
 	}else{
-		SLIST_REMOVE_HEAD(&(arena->free_blocks),link);
+		SLIST_REMOVE_HEAD(&(arena->free_blocks),link.list);
 		init_single_block(res);
 	}
 	return res;
@@ -140,19 +141,17 @@ struct single_bdescr* find_current_single_block(struct s_arena* arena){
 	struct single_bdescr* res = (struct single_bdescr*)SLIST_FIRST(&(arena->blocks));
 	if(res == NULL){
 		res = find_new_single_block(arena);
-		SLIST_INSERT_HEAD(&(arena->blocks),(struct bdescr*)res,link);
-		arena->cur_words = WORDS_OF_TYPE(struct single_bdescr);
+		SLIST_INSERT_HEAD(&(arena->blocks),(struct bdescr*)res,link.list);
 	}
 	return res;
 }
 void prepend_new_single_block(struct s_arena* arena){
 	struct single_bdescr* block = find_new_single_block(arena);
-	arena->cur_words = WORDS_OF_TYPE(struct single_bdescr);
-	SLIST_INSERT_HEAD(&(arena->blocks),(struct bdescr*)block,link);
+	SLIST_INSERT_HEAD(&(arena->blocks),(struct bdescr*)block,link.list);
 }
 
 void free_single_block(struct s_arena* arena,struct single_bdescr* block){
-	SLIST_INSERT_HEAD(&(arena->free_blocks),(struct bdescr*)block,link);
+	SLIST_INSERT_HEAD(&(arena->free_blocks),(struct bdescr*)block,link.list);
 }
 
 struct big_bdescr* find_new_big_blocks(struct s_arena* arena, unsigned int count){
@@ -165,30 +164,17 @@ void free_big_block(struct s_arena* arena,struct big_bdescr* block){
 	for(;count >0 ; count--){
 		struct single_bdescr* single_block = (struct single_bdescr*)vblock;
 		init_single_block(single_block);
-		SLIST_INSERT_HEAD(&(arena->free_blocks),(struct bdescr*)single_block,link);
+		SLIST_INSERT_HEAD(&(arena->free_blocks),(struct bdescr*)single_block,link.list);
 		vblock += (BLOCK_SIZE / sizeof(void*));
 	}
 }
 
 /*
  *******************************
- * High Level Allocators & GC
+ * High Level Allocators
  *******************************
  */
 #define BIG_THREASHOLD 256
-#define IS_PTR(x)     (1)
-#define GET_BLOCK(x)  ((void*)(((unsigned int)x) & (~(BLOCK_SIZE - 1))))
-#define GET_SIZE(x)   (((unsigned int)(((void*)x)-1))>>2  & 0x7ff)
-#define GET_NPTR(x)   (((unsigned int)(((void*)x)-1))>>12 & 0x7ff)
-#define SAVED_BITS(x) (((unsigned int)x) & 0x3)
-#define PTR_BITS(x)   ((void*)(((unsigned int)x) & ~(0x3)))
-#define BLOCK_TYPE(x) (((bdescr*)GET_BLOCK(x))->type)
-
-/*
- *******************************
- * High Level Allocators & GC
- *******************************
- */
 
 static void* mem_big_allocate(struct s_arena* arena, size_t size, unsigned int nptrs){
 	/* TODO THIS MAY CONATIN ALIGNMENT BUG */
@@ -209,13 +195,13 @@ static void* mem_small_allocate(struct s_arena* arena, size_t size, unsigned int
 	const int block_offset_words = WORDS_OF_TYPE(struct single_bdescr);
 	size_t size_in_words = WORDS_OF(size);
 
-	if((arena->cur_words + size +1)*sizeof(void*) > BLOCK_SIZE){
+	if((single_block->cur_words + size +1)*sizeof(void*) > BLOCK_SIZE){
 		prepend_new_single_block(arena);
  		single_block = find_current_single_block(arena);
 	}
-	ptr = ((void*)single_block) + ((arena->cur_words) +1) * sizeof(void*);
-	arena->cur_words += size_in_words + 1;
-	if((arena->cur_words + 2)*sizeof(void*) + block_offset_words > BLOCK_SIZE){
+	ptr = ((void*)single_block) + ((single_block->cur_words) +1) * sizeof(void*);
+	single_block->cur_words += size_in_words + 1;
+	if((single_block->cur_words + 2)*sizeof(void*) + block_offset_words > BLOCK_SIZE){
 		prepend_new_single_block(arena);
  		single_block = find_current_single_block(arena);
 	}
@@ -252,23 +238,132 @@ void* mem_allocate_with_finalizer(struct s_arena* arena, size_t size, unsigned i
  * GC
  *******************************
  */
+#define IS_PTR(x)     (1)
+#define GET_BLOCK(x)  ((void*)(((unsigned int)x) & (~(BLOCK_SIZE - 1))))
+#define GET_SIZE(x)   (((unsigned int)(((void*)x)-1))>>2  & 0x7ff)
+#define GET_NPTR(x)   (((unsigned int)(((void*)x)-1))>>12 & 0x7ff)
+#define SAVED_BITS(x) (((unsigned int)x) & 0x3)
+#define PTR_BITS(x)   ((void*)(((unsigned int)x) & ~(0x3)))
+#define BLOCK_TYPE(x) (((struct bdescr*)GET_BLOCK(x))->type)
+
+#define FORWARD_MASK  0x1
+#define IS_FORWARDED(x)  ((unsigned int)(((void**)x) -1)& FORWARD_MASK)
+#define FORWARDED_PTR(x) PTR_BITS((unsigned int)(((void**)x) -1))
+
+struct s_gc{
+	struct s_arena* arena;
+	STAILQ_HEAD(,bdescr) big_live_queue;
+	struct big_bdescr* scavenging_big_object;
+	SLIST_HEAD(,single_bdescr) to_space_list;
+	struct single_bdescr* to_space;
+	void* scavenging_object; 
+};
+
+void evacuate(void** src, struct s_gc* s_gc);
+
+static void init_gc(struct s_gc* s_gc,struct s_arena* arena){
+	s_gc->arena = arena;
+}
 
 void mem_add_root(struct s_arena* arena, void* root){
 	arena->root = root;
 }
 
 void perform_gc(struct s_arena* arena){
+	struct s_gc s_gc;
+	init_gc(&s_gc,arena);
+	/* phase 1 mark or evac root */
+	
+	/* phase 2 process scavenge queue */
+	/* phase 3 adjust objects */
 }
 
-void evacuate_small(void** src, void *obj, struct single_bdescr* to_space) {
+/* create to space if neccesarry */
+void check_to_space(size_t size_in_word,struct s_gc* s_gc){
 }
 
-void scavenge_small(void* obj){
+void** copy_obj(void** obj,struct single_bdescr* to_space,size_t size_in_word){
+	void** to_word = (void**) to_space;
+	int i = 0;
+	for(i = 0;i<size_in_word;i++){
+		*(to_word+i+to_space->cur_words) = *(obj+i);
+	}
+	to_space->cur_words += size_in_word;
+	return to_word;
 }
 
-void scavenge_big(void* obj){
+/* *src is a tag tainted pointer */
+/* obj is non-used value */
+void* evacuate_small(void** src, struct s_gc* s_gc){
+	void** obj_ptr = (void**) PTR_BITS(*src);
+	if(IS_FORWARDED(obj_ptr)){
+		void** new_ptr = FORWARDED_PTR(obj_ptr);
+		/* UPDATING SOURCE (with tag) */
+		*(src)         = (void*)((unsigned int) new_ptr | SAVED_BITS(*src));
+	} else{
+		void** new_ptr;
+		size_t size_in_word = GET_SIZE(obj_ptr);
+		check_to_space(size_in_word,s_gc);
+		/* remember new_pointer points to preceding info area. */
+		new_ptr = copy_obj(obj_ptr-1,s_gc->to_space,size_in_word+1);
+		/* FORWARDING POINTER (with forward tag) */
+		*((obj_ptr)-1) = (void*)(FORWARD_MASK | (unsigned int)(new_ptr-1));
+		/* UPDATING SOURCE (with tag) */
+		*(src)         = (void*)((unsigned int) (new_ptr-1) | SAVED_BITS(*src));
+	}
+	return PTR_BITS(*src);
+}
+	
+/* *src is a tag tainted pointer */
+void evacuate_big(void** src, struct s_gc* s_gc){
+	/* TODO meccha ososou!! reduce cost! */
+	struct big_bdescr* big_block = (struct big_bdescr*)GET_BLOCK(*src);
+	if(! big_block->used){
+		SLIST_REMOVE(&(s_gc->arena->big_blocks),(struct bdescr*)big_block,bdescr,link.list);
+		STAILQ_INSERT_TAIL(&(s_gc->big_live_queue),(struct bdescr*)big_block,link.tailq);
+		big_block->used = 1;
+	}
 }
 
-void mark_big(void* obj){
+void scavenge_small(void *obj, struct s_gc* s_gc){
+	void** obj_ptr = (void**)obj;
+	unsigned int nptrs = GET_NPTR(obj);
+	for(;nptrs > 0;nptrs--){
+		evacuate(obj_ptr,s_gc);
+		obj_ptr++;
+	}
+}
+
+void scavenge_big(void *obj, struct s_gc* s_gc){
+	struct big_bdescr* big_block = (struct big_bdescr*)GET_BLOCK(obj);
+	unsigned int nptrs = big_block->nptrs;
+	void** obj_ptr = (void**)obj;
+	for(;nptrs > 0;nptrs--){
+		evacuate(obj_ptr,s_gc);
+		obj_ptr++;
+	}
+	
+}
+
+void evacuate(void** src, struct s_gc* s_gc){
+	switch ( BLOCK_TYPE(*src)){
+	E_SINGLE:
+		evacuate_small(src,s_gc);
+	E_BIG:
+		evacuate_big(src,s_gc);
+	default:
+		debug("ERROR: %s\n","unknown object type");	
+	}
+}
+
+void scavenge(void** src, struct s_gc* s_gc){
+	switch ( BLOCK_TYPE(*src)){
+	E_SINGLE:
+		scavenge_small(src,s_gc);
+	E_BIG:
+		scavenge_big(src,s_gc);
+	default:
+		debug("ERROR: %s\n","unknown object type");	
+	}
 }
 
