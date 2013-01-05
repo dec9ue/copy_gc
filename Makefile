@@ -1,4 +1,5 @@
 OBJS = copy_gc.o copy_gc_test.o
+CFLAGS += -g
 
 run_test: test
 	./test
