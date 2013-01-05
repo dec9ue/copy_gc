@@ -205,6 +205,7 @@ static void* mem_small_allocate(struct s_arena* arena, size_t size, unsigned int
 		prepend_new_single_block(arena);
  		single_block = find_current_single_block(arena);
 	}
+	/* TODO write NULL after the allocated area if any space in hte block (for GC) */
 	debug("%s small_block size : %d size_in_words : %d\n",__FUNCTION__,size,size_in_words);
 	return ptr;
 }
@@ -254,17 +255,30 @@ struct s_gc{
 	struct s_arena* arena;
 	STAILQ_HEAD(,bdescr) big_live_queue;
 	struct big_bdescr* scavenging_big_object;
-	SLIST_HEAD(,single_bdescr) to_space_list;
+	STAILQ_HEAD(,bdescr) to_space_queue;
 	struct single_bdescr* to_space;
 	void* scavenging_object; 
 };
 
+//void scavenge(void** src, struct s_gc* s_gc);
 void evacuate(void** src, struct s_gc* s_gc);
+void scavenge_small(void* obj, struct s_gc* s_gc);
+void evacuate_small(void** src, struct s_gc* s_gc);
+void scavenge_big(void* obj, struct s_gc* s_gc);
+void evacuate_big(void** src, struct s_gc* s_gc);
+void* find_small_object(struct s_gc* s_gc);
+void* find_big_object(struct s_gc* s_gc);
 
 static void init_gc(struct s_gc* s_gc,struct s_arena* arena){
 	s_gc->arena = arena;
+	STAILQ_INIT(&(s_gc->big_live_queue));
+	s_gc->scavenging_big_object = NULL;
+	STAILQ_INIT(&(s_gc->to_space_queue));
+	s_gc->to_space = NULL;
+	s_gc->scavenging_object = NULL;
 }
 
+/* root must be alligned as sizeof(void*) */
 void mem_add_root(struct s_arena* arena, void* root){
 	arena->root = root;
 }
@@ -272,14 +286,125 @@ void mem_add_root(struct s_arena* arena, void* root){
 void perform_gc(struct s_arena* arena){
 	struct s_gc s_gc;
 	init_gc(&s_gc,arena);
+	void* obj = arena->root;
 	/* phase 1 mark or evac root */
+	evacuate(&obj,&s_gc);
 	
 	/* phase 2 process scavenge queue */
+	do{
+		void* scav_obj;
+		scav_obj  = find_small_object(&s_gc);
+		if( scav_obj != NULL){
+			scavenge_small(&scav_obj,&s_gc);
+			continue;
+		}
+		scav_obj  = find_big_object(&s_gc);
+		if( scav_obj != NULL){
+			scavenge_big(&scav_obj,&s_gc);
+			continue;
+		}
+		/* no scavenging object */
+		break;
+	}while( 1 );
+	
 	/* phase 3 adjust objects */
+	/* big objects : clear used bit & move to arena->blocks */
+	/* free old spaces */
+	/* re-link to spaces */
 }
 
-/* create to space if neccesarry */
+/* pop object to be scavenged. */
+void* find_small_object(struct s_gc* s_gc){
+	size_t size_in_words;
+	void** next_object = NULL;
+	struct single_bdescr* to_space;
+	if(s_gc->scavenging_object == NULL){
+		/* not initialized :  scavenging_object points to the before head. */
+		to_space = (struct single_bdescr*)STAILQ_FIRST(&(s_gc->to_space_queue));
+		if(to_space == NULL){
+			/* no to_space. no object to scavenge. */
+			return NULL;
+		}
+		s_gc->scavenging_object = (void*)(((void**)to_space)+(WORDS_OF_TYPE(struct single_bdescr)) + 1);
+	}
+	size_in_words = GET_SIZE(s_gc->scavenging_object);
+	if(size_in_words == 0){
+		/* not found at s_gc->scavenging_object. but may be found in next block. */
+		to_space = (struct single_bdescr*)STAILQ_NEXT((struct bdescr*)to_space,link.tailq);
+		if(to_space == NULL){
+			/* no to_space. no object to scavenge. */
+			return NULL;
+		}
+		s_gc->scavenging_object = (void*)(((void**)to_space)+(WORDS_OF_TYPE(struct single_bdescr)) + 1);
+		size_in_words = GET_SIZE(s_gc->scavenging_object);
+		if(size_in_words == 0){
+			return NULL;
+		}
+	}
+
+	next_object = s_gc->scavenging_object;
+
+	/* shifting s_gc->scavenging_object */
+	/* now to_space points to the object found. */
+	if(next_object + size_in_words + 2 <= ((void**)to_space) + (BLOCK_SIZE/sizeof(void*))){
+		/* enough space. safely shitt the  s_gc->scavenging_object */
+		s_gc->scavenging_object = (void*)(next_object + size_in_words);
+	} else {
+		/* shift to next page */
+		to_space = (struct single_bdescr*)STAILQ_NEXT((struct bdescr*)to_space,link.tailq);
+		if(to_space == NULL){
+			/* TODO force prepare for next page */
+			debug("%s : force prepare for next page\n",__FUNCTION__);
+			struct single_bdescr* new_block = find_new_single_block(s_gc->arena);
+			STAILQ_INSERT_TAIL(&(s_gc->to_space_queue),(struct bdescr*)new_block,link.tailq);
+		}
+		s_gc->scavenging_object = (void*)(((void**)to_space)+(WORDS_OF_TYPE(struct single_bdescr)) + 1);
+	}
+
+	return (void*)next_object;
+}
+
+/* pop object to be scavenged. */
+void* find_big_object(struct s_gc* s_gc){
+	struct big_bdescr* big_block = NULL;
+	/* two quite similar pathes exist. but we don't merge them for later debugging. */
+	if(s_gc->scavenging_big_object == NULL){
+		/* not initialized :  scavenging_big_object points to the before head. */
+		big_block = (struct big_bdescr*)STAILQ_FIRST(&(s_gc->big_live_queue));
+		if(big_block != NULL){
+			/* object to scavenge */
+			s_gc->scavenging_big_object = big_block;
+		} else{
+			/* no object to scavenge, waiting for any object to be scavenged */
+			/* if  find_small_object works well, this may not happen */
+			debug("%s : no object found.\n",__FUNCTION__);
+			return NULL;
+		}
+	}else{
+		big_block = (struct big_bdescr*)STAILQ_NEXT((struct bdescr*)s_gc->scavenging_big_object,link.tailq);
+		if(big_block != NULL){
+			s_gc->scavenging_big_object = big_block;
+		} else {
+			debug("%s : no object found: big object reached to the tail\n",__FUNCTION__);
+			return NULL;
+		}
+	}
+	return (void*)(( (void**)big_block)+WORDS_OF_TYPE(struct big_bdescr));
+}
+
+/* create to space if neccesarry (can't store the size of the object) */
 void check_to_space(size_t size_in_word,struct s_gc* s_gc){
+	struct single_bdescr* to_space = (struct single_bdescr*)STAILQ_FIRST(&(s_gc->to_space_queue));
+	if(to_space == NULL || (to_space->cur_words+size_in_word)*sizeof(void*) > BLOCK_SIZE){
+		if(to_space != NULL){
+			/* mark this area is not used. */
+			*(to_space->cur_words+(void**)to_space) = NULL;
+		}
+		/* prepare next to_space */
+		to_space = find_new_single_block(s_gc->arena);
+		STAILQ_INSERT_TAIL(&(s_gc->to_space_queue),(struct bdescr*)to_space,link.tailq);
+	}
+	s_gc->to_space = to_space;
 }
 
 void** copy_obj(void** obj,struct single_bdescr* to_space,size_t size_in_word){
@@ -288,13 +413,17 @@ void** copy_obj(void** obj,struct single_bdescr* to_space,size_t size_in_word){
 	for(i = 0;i<size_in_word;i++){
 		*(to_word+i+to_space->cur_words) = *(obj+i);
 	}
+	/* if this is the same block, empty word next to me. */
+	if(((void**)to_space) == (void**)GET_BLOCK(to_word+size_in_word+to_space->cur_words)){
+		*(to_word+size_in_word+to_space->cur_words) = NULL;
+	}
 	to_space->cur_words += size_in_word;
 	return to_word;
 }
 
 /* *src is a tag tainted pointer */
 /* obj is non-used value */
-void* evacuate_small(void** src, struct s_gc* s_gc){
+void evacuate_small(void** src, struct s_gc* s_gc){
 	void** obj_ptr = (void**) PTR_BITS(*src);
 	if(IS_FORWARDED(obj_ptr)){
 		void** new_ptr = FORWARDED_PTR(obj_ptr);
@@ -309,9 +438,8 @@ void* evacuate_small(void** src, struct s_gc* s_gc){
 		/* FORWARDING POINTER (with forward tag) */
 		*((obj_ptr)-1) = (void*)(FORWARD_MASK | (unsigned int)(new_ptr-1));
 		/* UPDATING SOURCE (with tag) */
-		*(src)         = (void*)((unsigned int) (new_ptr-1) | SAVED_BITS(*src));
+		*(src)         = (void*)((unsigned int) (new_ptr+1) | SAVED_BITS(*src));
 	}
-	return PTR_BITS(*src);
 }
 	
 /* *src is a tag tainted pointer */
@@ -356,14 +484,4 @@ void evacuate(void** src, struct s_gc* s_gc){
 	}
 }
 
-void scavenge(void** src, struct s_gc* s_gc){
-	switch ( BLOCK_TYPE(*src)){
-	E_SINGLE:
-		scavenge_small(src,s_gc);
-	E_BIG:
-		scavenge_big(src,s_gc);
-	default:
-		debug("ERROR: %s\n","unknown object type");	
-	}
-}
 
