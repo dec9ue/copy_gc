@@ -175,6 +175,10 @@ void free_big_block(struct s_arena* arena,struct big_bdescr* block){
  *******************************
  */
 #define BIG_THREASHOLD 256
+#define GET_SIZE(x)   (((*(((unsigned int*)x)-1))>> 2) & 0x3ff)
+#define SET_SIZE(x,s) do{*(((unsigned int*)x)-1)|=((s&0x3ff)<< 2);}while(0)
+#define GET_NPTR(x)   (((*(((unsigned int*)x)-1))>>12) & 0x3ff)
+#define SET_NPTR(x,n) do{*(((unsigned int*)x)-1)|=((n&0x3ff)<<12);}while(0)
 
 static void* mem_big_allocate(struct s_arena* arena, size_t size, unsigned int nptrs){
 	/* TODO THIS MAY CONATIN ALIGNMENT BUG */
@@ -219,6 +223,8 @@ static void* mem_small_allocate(struct s_arena* arena, size_t size, unsigned int
 		prepend_new_single_block(arena);
  		single_block = find_current_single_block(arena);
 	}
+	SET_SIZE(ptr,size);
+	SET_NPTR(ptr,nptrs);
 	debug("%s small_block size : %d size_in_words : %d\n",__FUNCTION__,size,size_in_words);
 	return ptr;
 }
@@ -254,8 +260,6 @@ void* mem_allocate_with_finalizer(struct s_arena* arena, size_t size, unsigned i
  */
 #define IS_PTR(x)     (1)
 #define GET_BLOCK(x)  ((void*)(((unsigned int)x) & (~(BLOCK_SIZE - 1))))
-#define GET_SIZE(x)   (((unsigned int)(((void*)x)-1))>>2  & 0x7ff)
-#define GET_NPTR(x)   (((unsigned int)(((void*)x)-1))>>12 & 0x7ff)
 #define SAVED_BITS(x) (((unsigned int)x) & 0x3)
 #define PTR_BITS(x)   ((void*)(((unsigned int)x) & ~(0x3)))
 #define BLOCK_TYPE(x) (((struct bdescr*)GET_BLOCK(x))->type)
@@ -421,17 +425,23 @@ void check_to_space(size_t size_in_word,struct s_gc* s_gc){
 }
 
 void** copy_obj(void** obj,struct single_bdescr* to_space,size_t size_in_word){
-	void** to_word = (void**) to_space;
-	int i = 0;
+	void** new_ptr = ((void**)to_space)+to_space->cur_words+1;
+	debug("%s : new_ptr %08x to_space %08x src_obj %08x size %d\n",__FUNCTION__,new_ptr,to_space,obj,size_in_word);
+	dump_small(obj,size_in_word);
+	int i;
+	*(new_ptr-1) = *(obj-1);
 	for(i = 0;i<size_in_word;i++){
-		*(to_word+i+to_space->cur_words) = *(obj+i);
+		*(new_ptr+i) = *(obj+i);
 	}
 	/* if this is the same block, empty word next to me. */
-	if(((void**)to_space) == (void**)GET_BLOCK(to_word+size_in_word+to_space->cur_words)){
-		*(to_word+size_in_word+to_space->cur_words) = NULL;
+	if(((void**)to_space) == (void**)GET_BLOCK(new_ptr+size_in_word)){
+		*(new_ptr+size_in_word) = NULL;
+		dump_small(new_ptr,size_in_word);
+	} else {
+		dump_small(new_ptr,size_in_word-1);
 	}
-	to_space->cur_words += size_in_word;
-	return to_word;
+	to_space->cur_words += size_in_word+1;
+	return new_ptr;
 }
 
 /* *src is a tag tainted pointer */
@@ -447,11 +457,13 @@ void evacuate_small(void** src, struct s_gc* s_gc){
 		size_t size_in_word = GET_SIZE(obj_ptr);
 		check_to_space(size_in_word,s_gc);
 		/* remember new_pointer points to preceding info area. */
-		new_ptr = copy_obj(obj_ptr-1,s_gc->to_space,size_in_word+1);
+		new_ptr = copy_obj(obj_ptr,s_gc->to_space,size_in_word);
 		/* FORWARDING POINTER (with forward tag) */
-		*((obj_ptr)-1) = (void*)(FORWARD_MASK | (unsigned int)(new_ptr-1));
+		*((obj_ptr)-1) = (void*)(FORWARD_MASK | (unsigned int)(new_ptr));
 		/* UPDATING SOURCE (with tag) */
-		*(src)         = (void*)((unsigned int) (new_ptr+1) | SAVED_BITS(*src));
+		*(src)         = (void*)((unsigned int) (new_ptr) | SAVED_BITS(*src));
+		debug("%s : evacuated. blow is the old object\n",__FUNCTION__);
+		dump_small(obj_ptr,size_in_word);
 	}
 }
 	
@@ -469,7 +481,7 @@ void evacuate_big(void** src, struct s_gc* s_gc){
 void scavenge_small(void *obj, struct s_gc* s_gc){
 	void** obj_ptr = (void**)obj;
 	unsigned int nptrs = GET_NPTR(obj);
-	debug("%s : obj   %08x\n",__FUNCTION__,(unsigned int)(obj));
+	debug("%s : obj   %08x nptr: %d\n",__FUNCTION__,(unsigned int)(obj),nptrs);
 	for(;nptrs > 0;nptrs--){
 		evacuate(obj_ptr,s_gc);
 		obj_ptr++;
@@ -491,7 +503,7 @@ void scavenge_big(void *obj, struct s_gc* s_gc){
 void evacuate(void** src, struct s_gc* s_gc){
 	debug("%s : *src  %08x\n",__FUNCTION__,(unsigned int)(*src));
 	debug("%s : BLOCK %08x\n",__FUNCTION__,(unsigned int)GET_BLOCK(*src));
-	dump(GET_BLOCK(*src),32);
+//	dump(GET_BLOCK(*src),32);
 	enum e_descr_type e = BLOCK_TYPE(*src);
 
 	if (e == E_BLOCK_SINGLE){

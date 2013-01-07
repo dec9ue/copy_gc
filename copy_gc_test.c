@@ -1,6 +1,11 @@
 #include <stdio.h>
 #include "copy_gc.h"
 
+#define GET_SIZE(x)   (((*(((unsigned int*)x)-1))>> 2) & 0x3ff)
+#define SET_SIZE(x,s) do{*(((unsigned int*)x)-1)|=((s&0x3ff)<< 2);}while(0)
+#define GET_NPTR(x)   (((*(((unsigned int*)x)-1))>>12) & 0x3ff)
+#define SET_NPTR(x,n) do{*(((unsigned int*)x)-1)|=((s&0x3ff)<<12);}while(0)
+
 void dump(void* ptr, size_t size){
 	int unit = 16;
 	int i;
@@ -25,12 +30,38 @@ void dump(void* ptr, size_t size){
 	}
 }
 
+void dump_naive(void* ptr,size_t size){
+	unsigned char* p = ((unsigned char*)ptr);
+	const int unit = 16;
+	int i;
+	for( i = 0; i < size  ; i++){
+		switch( (i+1)%unit ){
+		case 0:
+			printf("%02x\n",*(p+i));	
+			break;
+		case 1:
+			printf("%08x : %02x ",(unsigned int)(p+i),*(p+i));
+			break;
+		default:
+			printf("%02x ",*(p+i));
+			break;
+		}
+	}
+}
+
+void dump_small(void*ptr,size_t size_in_words){
+	printf("ptr : %08x\n",*(((void**)ptr)-1));
+	printf("size : %08x(%d) nptrs : %08x(%d)\n",GET_SIZE(ptr),GET_SIZE(ptr),GET_NPTR(ptr),GET_NPTR(ptr));
+	dump_naive(ptr-4,sizeof(void*)*(size_in_words+2));
+}
+
 int main(int argc,char** argv){
 	struct s_arena* arena;
 	struct single_bdescr* single_block;
 	struct big_bdescr   * big_blocks;
 	void* ptr;
 
+#if 0
 	{
 		/* test for block allocator */
 		arena = new_arena();
@@ -60,6 +91,27 @@ int main(int argc,char** argv){
 			printf("alloc : %08x\n",(unsigned int)ptr);
 		}
 	}
+#endif
+	
+#if 0
+	{
+		//unsigned int v = 0xdeadbeef;
+		unsigned int v = 0xffffffff;
+		unsigned int w = 0x0;
+		void* a = (void*)(1+&v);
+		void* b = (void*)(1+&w);
+		unsigned int i = GET_SIZE(a);
+		SET_SIZE(b,i);
+		printf("v : %08x\n",(unsigned int)v);
+		printf("a : %08x\n",*(unsigned int*)a);
+		printf("a-: %08x\n",*(((unsigned int*)a)-1));
+		printf("s : %08x\n",(unsigned int)i);
+		printf("b : %08x\n",*(unsigned int*)b);
+		printf("b-: %08x\n",*(((unsigned int*)b)-1));
+		printf("bs: %08x\n",GET_SIZE(b));
+		
+	}
+#endif
 	{
 		arena = new_arena();
 		ptr = mem_allocate(arena, 10, 10);
@@ -75,6 +127,8 @@ int main(int argc,char** argv){
 				printf("alloc : %08x\n",(unsigned int)((void***)ptr)[i][j]);
 			}
 		}
+		printf("dumping ptr:  %08x\n",ptr);
+		dump_small(ptr,10);
 		perform_gc(arena);
 	}
 	/*  */
