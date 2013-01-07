@@ -38,7 +38,6 @@ struct s_arena* new_arena(){
 	SLIST_INIT(&arena->blocks);
 	SLIST_INIT(&arena->free_blocks);
 	SLIST_INIT(&arena->mega_blocks);
-	SLIST_INIT(&arena->big_blocks);
 	debug("%s sizeof(single_bdescr) %0x, sizeof(big_bdescr) %0x, sizeof(void*) %0x\n",__FUNCTION__,sizeof(struct single_bdescr),sizeof(struct big_bdescr),sizeof(void*));
 	return arena;
 }
@@ -163,6 +162,10 @@ struct big_bdescr* find_new_big_blocks(struct s_arena* arena, unsigned int count
 void free_big_block(struct s_arena* arena,struct big_bdescr* block){
 	unsigned int count = block->nblocks;
 	void* vblock = (void*) block;
+	/* moved to caller responsibility. */
+	/*
+	SLIST_REMOVE(&(arena->free_blocks),(struct bdescr*)block,bdescr,link.list);
+	*/
 	for(;count >0 ; count--){
 		struct single_bdescr* single_block = (struct single_bdescr*)vblock;
 		init_single_block(single_block);
@@ -201,7 +204,7 @@ static void* mem_small_allocate(struct s_arena* arena, size_t size_in_words, uns
 	if((single_block->cur_words + size_in_words +1)*sizeof(void*) > BLOCK_SIZE){
 		/* no space to alloc */
 		/* clear trailing area */
-		debug("%s : 1 single_bloc %08x cur_words %08x target %08x\n",__FUNCTION__,single_block,single_block->cur_words,(((void**) single_block)+single_block->cur_words));
+		debug("%s : 1 single_bloc %08x cur_words %08x target %08x\n",__FUNCTION__,single_block,single_block->cur_words,(unsigned int)(((void**) single_block)+single_block->cur_words));
 		*(((void**) single_block)+single_block->cur_words) = NULL;
 		prepend_new_single_block(arena);
  		single_block = find_current_single_block(arena);
@@ -210,7 +213,7 @@ static void* mem_small_allocate(struct s_arena* arena, size_t size_in_words, uns
 	ptr = (void*)((void**)single_block + ((single_block->cur_words) +1));
 	single_block->cur_words += size_in_words + 1;
 	debug("%s : 2 single_bloc %08x cur_words %08x target %08x\n",__FUNCTION__,single_block,single_block->cur_words,(((void**) single_block)+single_block->cur_words));
-		*(((void**) single_block)+single_block->cur_words) = NULL;
+	*(((void**) single_block)+single_block->cur_words) = NULL;
 	if((single_block->cur_words + 1)*sizeof(void*) < BLOCK_SIZE){
 		*(((void**) single_block)+(single_block->cur_words +1)) = NULL;
 	}
@@ -332,8 +335,21 @@ void perform_gc(struct s_arena* arena){
 	
 	/* phase 3 adjust objects */
 	/* big objects : clear used bit & move to arena->blocks */
+	struct big_bdescr* big_block = (struct big_bdescr*)SLIST_FIRST(&(arena->big_blocks));
+	SLIST_EMPTY(&(arena->big_blocks));
+	do{
+		struct big_bdescr* new_big_block = (struct big_bdescr*)SLIST_NEXT((struct bdescr*)big_block,link.list);
+		if(big_block->used){
+			SLIST_INSERT_HEAD(&(arena->big_blocks),(struct bdescr*)big_block,link.list);
+			big_block-> used = 0;
+		} else {
+			/* finalize */
+			/* TODO if any finalizer, call here (before small blocks released)*/
+			free_big_block(arena,big_block);
+		}
+		big_block = new_big_block;
+	}while(big_block);
 	/* free old spaces */
-	/* re-link to spaces */
 }
 
 /* pop object to be scavenged. */
@@ -489,11 +505,9 @@ void evacuate_small(void** src, struct s_gc* s_gc){
 	
 /* *src is a tag tainted pointer */
 void evacuate_big(void** src, struct s_gc* s_gc){
-	/* TODO meccha ososou!! reduce cost! */
 	struct big_bdescr* big_block = (struct big_bdescr*)GET_BLOCK(*src);
 	if(! big_block->used){
-		SLIST_REMOVE(&(s_gc->arena->big_blocks),(struct bdescr*)big_block,bdescr,link.list);
-		STAILQ_INSERT_TAIL(&(s_gc->big_live_queue),(struct bdescr*)big_block,link.tailq);
+		/* TODO add to live queue, remove from old list */
 		big_block->used = 1;
 		s_gc->big_evaced ++;
 	}
