@@ -7,8 +7,8 @@ struct mega_bdescr{
 };
 
 enum e_descr_type {
-	E_SINGLE,
-	E_BIG,
+	E_BLOCK_SINGLE = 0x0b,
+	E_BLOCK_BIG = 0x0c,
 };
 
 struct bdescr{

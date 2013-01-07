@@ -95,7 +95,7 @@ void* new_blocks(struct s_arena* arena,size_t count){
 }
 
 void init_single_block(struct single_bdescr* new_block){
-	new_block->bdescr.type = E_SINGLE;
+	new_block->bdescr.type = E_BLOCK_SINGLE;
 	new_block->cur_words = WORDS_OF_TYPE(struct single_bdescr);
 }
 
@@ -107,7 +107,7 @@ struct single_bdescr* new_single_block(struct s_arena* arena){
 }
 
 void init_big_block(struct big_bdescr* new_blocks, unsigned int count){
-	new_blocks->bdescr.type = E_BIG;
+	new_blocks->bdescr.type = E_BLOCK_BIG;
 	new_blocks->nblocks = count;
 	new_blocks->size    = 0;
 	new_blocks->nptrs   = 0;
@@ -132,8 +132,8 @@ struct single_bdescr* find_new_single_block(struct s_arena* arena){
 		res = new_single_block(arena);
 	}else{
 		SLIST_REMOVE_HEAD(&(arena->free_blocks),link.list);
-		init_single_block(res);
 	}
+	init_single_block(res);
 	return res;
 }
 
@@ -195,17 +195,30 @@ static void* mem_small_allocate(struct s_arena* arena, size_t size, unsigned int
 	const int block_offset_words = WORDS_OF_TYPE(struct single_bdescr);
 	size_t size_in_words = WORDS_OF(size);
 
-	if((single_block->cur_words + size +1)*sizeof(void*) > BLOCK_SIZE){
+	if((single_block->cur_words + size_in_words +1)*sizeof(void*) > BLOCK_SIZE){
+		/* no space to alloc */
+		/* clear trailing area */
+		debug("%s : 1 single_bloc %08x cur_words %08x target %08x\n",__FUNCTION__,single_block,single_block->cur_words,(((void**) single_block)+single_block->cur_words));
+		*(((void**) single_block)+single_block->cur_words) = NULL;
 		prepend_new_single_block(arena);
  		single_block = find_current_single_block(arena);
 	}
-	ptr = ((void*)single_block) + ((single_block->cur_words) +1) * sizeof(void*);
+	/* allocated ptr is now fixed. */
+	ptr = (void*)((void**)single_block + ((single_block->cur_words) +1));
 	single_block->cur_words += size_in_words + 1;
-	if((single_block->cur_words + 2)*sizeof(void*) + block_offset_words > BLOCK_SIZE){
+	debug("%s : 2 single_bloc %08x cur_words %08x target %08x\n",__FUNCTION__,single_block,single_block->cur_words,(((void**) single_block)+single_block->cur_words));
+		*(((void**) single_block)+single_block->cur_words) = NULL;
+	if((single_block->cur_words + 1)*sizeof(void*) < BLOCK_SIZE){
+		*(((void**) single_block)+(single_block->cur_words +1)) = NULL;
+	}
+	if((single_block->cur_words + size_in_words +1)*sizeof(void*) > BLOCK_SIZE){
+		debug("%s : 3 single_bloc %08x cur_words %08x target %08x\n",__FUNCTION__,single_block,single_block->cur_words,(((void**) single_block)+single_block->cur_words));
+		/* no space to alloc */
+		/* clear trailing area */
+		*(((void**) single_block)+single_block->cur_words) = NULL;
 		prepend_new_single_block(arena);
  		single_block = find_current_single_block(arena);
 	}
-	/* TODO write NULL after the allocated area if any space in hte block (for GC) */
 	debug("%s small_block size : %d size_in_words : %d\n",__FUNCTION__,size,size_in_words);
 	return ptr;
 }
@@ -456,6 +469,7 @@ void evacuate_big(void** src, struct s_gc* s_gc){
 void scavenge_small(void *obj, struct s_gc* s_gc){
 	void** obj_ptr = (void**)obj;
 	unsigned int nptrs = GET_NPTR(obj);
+	debug("%s : obj   %08x\n",__FUNCTION__,(unsigned int)(obj));
 	for(;nptrs > 0;nptrs--){
 		evacuate(obj_ptr,s_gc);
 		obj_ptr++;
@@ -466,6 +480,7 @@ void scavenge_big(void *obj, struct s_gc* s_gc){
 	struct big_bdescr* big_block = (struct big_bdescr*)GET_BLOCK(obj);
 	unsigned int nptrs = big_block->nptrs;
 	void** obj_ptr = (void**)obj;
+	debug("%s : obj   %08x\n",__FUNCTION__,(unsigned int)(obj));
 	for(;nptrs > 0;nptrs--){
 		evacuate(obj_ptr,s_gc);
 		obj_ptr++;
@@ -474,14 +489,20 @@ void scavenge_big(void *obj, struct s_gc* s_gc){
 }
 
 void evacuate(void** src, struct s_gc* s_gc){
-	switch ( BLOCK_TYPE(*src)){
-	E_SINGLE:
+	debug("%s : *src  %08x\n",__FUNCTION__,(unsigned int)(*src));
+	debug("%s : BLOCK %08x\n",__FUNCTION__,(unsigned int)GET_BLOCK(*src));
+	dump(GET_BLOCK(*src),32);
+	enum e_descr_type e = BLOCK_TYPE(*src);
+
+	if (e == E_BLOCK_SINGLE){
+		debug("%s : small\n",__FUNCTION__);
 		evacuate_small(src,s_gc);
-	E_BIG:
+	} else if (e == E_BLOCK_BIG){
+		debug("%s : big\n",__FUNCTION__);
 		evacuate_big(src,s_gc);
-	default:
-		debug("ERROR: %s\n","unknown object type");	
+	} else {
+		debug("ERROR: %s : %s : %08x\n", __FUNCTION__,"unknown object type",(unsigned int)e);
+		debug("ERROR: %s : BIG %08x SINGLE %08x\n", __FUNCTION__,E_BLOCK_BIG,E_BLOCK_SINGLE);
 	}
 }
-
 
