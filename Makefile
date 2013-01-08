@@ -1,5 +1,5 @@
 OBJS = copy_gc.o copy_gc_test.o
-CFLAGS += -g
+CFLAGS += -g -DCGC_DEBUG
 
 run_test: test
 	./test

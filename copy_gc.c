@@ -2,10 +2,18 @@
 #include "queue.h"
 #include "copy_gc.h"
 
-#define debug(x,...) printf(x,__VA_ARGS__)
 
 #define WORDS_OF(v)   (((v-1)/sizeof(void*))+1)
 #define WORDS_OF_TYPE(type)   WORDS_OF(sizeof(type))
+
+#ifdef CGC_DEBUG
+#define debug(x,...) printf(x,__VA_ARGS__)
+#else
+#define debug(x,...)
+#endif
+void dump_naive(void* ptr,size_t size);
+void dump_small(void*ptr,size_t size_in_words);
+
 
 /*
  *******************************
@@ -270,7 +278,7 @@ void* mem_allocate_with_finalizer(struct s_arena* arena, size_t size, unsigned i
 #define FORWARD_MASK  0x1
 //#define IS_FORWARDED(x)  ((unsigned int)(((void**)x) -1)& FORWARD_MASK)
 #define IS_FORWARDED(x)  (((*(((unsigned int*)x)-1)) & FORWARD_MASK) == FORWARD_MASK)
-#define FORWARDED_PTR(x) PTR_BITS((unsigned int)(((void**)x) -1))
+#define FORWARDED_PTR(x) ((void*)(PTR_BITS(*(unsigned int*)(((void**)x) -1))))
 
 struct s_gc{
 	struct s_arena* arena;
@@ -587,5 +595,49 @@ void evacuate(void** src, struct s_gc* s_gc){
 		debug("ERROR: %s : %s : %08x\n", __FUNCTION__,"unknown object type",(unsigned int)e);
 		debug("ERROR: %s : BIG %08x SINGLE %08x\n", __FUNCTION__,E_BLOCK_BIG,E_BLOCK_SINGLE);
 	}
+}
+
+void dump_naive(void* ptr,size_t size){
+#ifdef CGC_DEBUG
+	unsigned char* p = ((unsigned char*)ptr);
+	const int unit = 16;
+	int i;
+	for( i = 0; i < size  ; i++){
+		switch( (i+1)%unit ){
+		case 0:
+			printf("%02x\n",*(p+i));	
+			break;
+		case 1:
+			printf("%08x : %02x ",(unsigned int)(p+i),*(p+i));
+			break;
+		default:
+			printf("%02x ",*(p+i));
+			break;
+		}
+#ifndef NO_SHORT_DUMP
+		if((i == 31) && (size > 64) ){
+			printf("       :\n");
+			i += ((size / 16) -sizeof(void*)) * 16;
+		}
+#endif
+	}
+	if( (i % unit) != 0){
+		printf("\n");
+	}
+#endif
+}
+
+void dump_small(void*ptr,size_t size_in_words){
+#ifdef CGC_DEBUG
+	void* head = *(((void**)ptr)-1);
+	if(((unsigned int)head) & 0x01 != 0){
+		printf("ptr : %08x\n",head);
+	} else {
+		int size = GET_SIZE(ptr);
+		int nptr = GET_NPTR(ptr);
+		printf("size : %08x(%d) nptrs : %08x(%d) (ptr : %08x)\n",size,size,nptr,nptr,head);
+	}
+	dump_naive(ptr-sizeof(void*),sizeof(void*)*(size_in_words+2));
+#endif
 }
 

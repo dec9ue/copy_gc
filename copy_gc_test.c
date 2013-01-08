@@ -30,46 +30,6 @@ void dump(void* ptr, size_t size){
 	}
 }
 
-void dump_naive(void* ptr,size_t size){
-	unsigned char* p = ((unsigned char*)ptr);
-	const int unit = 16;
-	int i;
-	for( i = 0; i < size  ; i++){
-		switch( (i+1)%unit ){
-		case 0:
-			printf("%02x\n",*(p+i));	
-			break;
-		case 1:
-			printf("%08x : %02x ",(unsigned int)(p+i),*(p+i));
-			break;
-		default:
-			printf("%02x ",*(p+i));
-			break;
-		}
-#if 1
-		if((i == 31) && (size > 64) ){
-			printf("       :\n");
-			i += ((size / 16) -sizeof(void*)) * 16;
-		}
-#endif
-	}
-	if( (i % unit) != 0){
-		printf("\n");
-	}
-}
-
-void dump_small(void*ptr,size_t size_in_words){
-	void* head = *(((void**)ptr)-1);
-	if(((unsigned int)head) & 0x01 != 0){
-		printf("ptr : %08x\n",head);
-	} else {
-		int size = GET_SIZE(ptr);
-		int nptr = GET_NPTR(ptr);
-		printf("size : %08x(%d) nptrs : %08x(%d) (ptr : %08x)\n",size,size,nptr,nptr,head);
-	}
-	dump_naive(ptr-sizeof(void*),sizeof(void*)*(size_in_words+2));
-}
-
 int main(int argc,char** argv){
 	struct s_arena* arena;
 	struct single_bdescr* single_block;
@@ -136,7 +96,7 @@ int main(int argc,char** argv){
 		arena = new_arena();
 		ptr = mem_allocate(arena, 10, 10);
 		printf("root alloc : %08x\n",(unsigned int)ptr);
-		mem_add_root(arena,ptr);
+		mem_add_root(arena,&ptr);
 		int i;
 		for(i=0;i<10;i++){
 			int j;
@@ -239,6 +199,7 @@ int main(int argc,char** argv){
 		perform_gc(arena);
 	}
 #endif
+
 	/*  */
 	return 0;
 }
