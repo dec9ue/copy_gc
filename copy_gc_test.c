@@ -46,23 +46,36 @@ void dump_naive(void* ptr,size_t size){
 			printf("%02x ",*(p+i));
 			break;
 		}
+		if((i == 31) && (size > 64) ){
+			printf("       :\n");
+			i += ((size / 16) -sizeof(void*)) * 16;
+		}
+	}
+	if( (i % unit) != 0){
+		printf("\n");
 	}
 }
 
 void dump_small(void*ptr,size_t size_in_words){
-	printf("ptr : %08x\n",*(((void**)ptr)-1));
-	printf("size : %08x(%d) nptrs : %08x(%d)\n",GET_SIZE(ptr),GET_SIZE(ptr),GET_NPTR(ptr),GET_NPTR(ptr));
-	dump_naive(ptr-4,sizeof(void*)*(size_in_words+2));
+	void* head = *(((void**)ptr)-1);
+	if(((unsigned int)head) & 0x01 != 0){
+		printf("ptr : %08x\n",head);
+	} else {
+		int size = GET_SIZE(ptr);
+		int nptr = GET_NPTR(ptr);
+		printf("size : %08x(%d) nptrs : %08x(%d) (ptr : %08x)\n",size,size,nptr,nptr,head);
+	}
+	dump_naive(ptr-sizeof(void*),sizeof(void*)*(size_in_words+2));
 }
 
 int main(int argc,char** argv){
 	struct s_arena* arena;
 	struct single_bdescr* single_block;
 	struct big_bdescr   * big_blocks;
-	void* ptr;
 
 #if 0
 	{
+		void* ptr;
 		/* test for block allocator */
 		arena = new_arena();
 		single_block = new_single_block(arena);
@@ -80,6 +93,7 @@ int main(int argc,char** argv){
 	}
 
 	{
+		void* ptr;
 		arena = new_arena();
 		ptr = mem_allocate(arena, 10, 10);
 		printf("alloc : %08x\n",(unsigned int)ptr);
@@ -95,6 +109,7 @@ int main(int argc,char** argv){
 	
 #if 0
 	{
+		void* ptr;
 		//unsigned int v = 0xdeadbeef;
 		unsigned int v = 0xffffffff;
 		unsigned int w = 0x0;
@@ -112,7 +127,10 @@ int main(int argc,char** argv){
 		
 	}
 #endif
+#if 0
 	{
+		// simple patetrn
+		void* ptr;
 		arena = new_arena();
 		ptr = mem_allocate(arena, 10, 10);
 		printf("root alloc : %08x\n",(unsigned int)ptr);
@@ -120,11 +138,37 @@ int main(int argc,char** argv){
 		int i;
 		for(i=0;i<10;i++){
 			int j;
-			((void**)ptr)[i] = mem_allocate(arena, (i+1)*40, i);
+			((void**)ptr)[i] = mem_allocate(arena, (i+1)*10, i);
 			printf("alloc : %08x\n",(unsigned int)((void**)ptr)[i]);
 			for(j = 0; j < i ; j++){
-				((void***)ptr)[i][j] = mem_allocate(arena, (j+1)*35, 0);
+				((void***)ptr)[i][j] = mem_allocate(arena, (j+1)*8, 0);
 				printf("alloc : %08x\n",(unsigned int)((void***)ptr)[i][j]);
+			}
+		}
+		printf("dumping ptr:  %08x\n",ptr);
+		dump_small(ptr,10);
+		perform_gc(arena);
+	}
+#endif
+	{
+		// with forwarding
+		void* ptr;
+		arena = new_arena();
+		ptr = mem_allocate(arena, 10, 10);
+		printf("root alloc : %08x\n",(unsigned int)ptr);
+		mem_add_root(arena,ptr);
+		int i;
+		for(i=0;i<10;i++){
+			int j;
+			((void**)ptr)[i] = mem_allocate(arena, (i+1)*10, i);
+			printf("alloc : %08x\n",(unsigned int)((void**)ptr)[i]);
+			void* small_ptr = mem_allocate(arena, 8, 0);
+			void* big_ptr   = mem_allocate(arena, 256, 0);
+			printf("alloc small : %08x\n",(unsigned int)small_ptr);
+			printf("alloc big   : %08x\n",(unsigned int)big_ptr);
+			for(j = 0; j < i ; j++){
+				((void***)ptr)[i][j] = ((j%2)==0?small_ptr:big_ptr);
+//				printf("alloc : %08x\n",(unsigned int)((void***)ptr)[i][j]);
 			}
 		}
 		printf("dumping ptr:  %08x\n",ptr);
