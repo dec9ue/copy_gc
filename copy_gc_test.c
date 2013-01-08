@@ -46,10 +46,12 @@ void dump_naive(void* ptr,size_t size){
 			printf("%02x ",*(p+i));
 			break;
 		}
+#if 0
 		if((i == 31) && (size > 64) ){
 			printf("       :\n");
 			i += ((size / 16) -sizeof(void*)) * 16;
 		}
+#endif
 	}
 	if( (i % unit) != 0){
 		printf("\n");
@@ -156,7 +158,7 @@ int main(int argc,char** argv){
 		arena = new_arena();
 		ptr = mem_allocate(arena, 10, 10);
 		printf("root alloc : %08x\n",(unsigned int)ptr);
-		mem_add_root(arena,ptr);
+		mem_add_root(arena,&ptr);
 		int i;
 		for(i=0;i<10;i++){
 			int j;
@@ -174,6 +176,8 @@ int main(int argc,char** argv){
 		printf("dumping ptr:  %08x\n",ptr);
 		dump_small(ptr,10);
 		perform_gc(arena);
+		perform_gc(arena);
+//		perform_gc(arena);
 	}
 	/*  */
 	return 0;

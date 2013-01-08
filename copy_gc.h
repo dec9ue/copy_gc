@@ -12,10 +12,7 @@ enum e_descr_type {
 };
 
 struct bdescr{
-	union{
-		SLIST_ENTRY(bdescr) list;
-		STAILQ_ENTRY(bdescr) tailq;
-	}link;
+	TAILQ_ENTRY(bdescr) link;
 	enum e_descr_type type;
 };
 
@@ -32,12 +29,14 @@ struct single_bdescr{
 	unsigned int cur_words;
 };
 
+typedef TAILQ_HEAD( , bdescr) bdescr_queue_t;
+
 struct s_arena{
-	SLIST_HEAD( arena_mega_bdescr1  , mega_bdescr)   mega_blocks;
-	SLIST_HEAD( arena_single_bdescr1, bdescr) blocks;
-	SLIST_HEAD( arena_single_bdescr2, bdescr) free_blocks;
-	SLIST_HEAD( arena_big_bdescr1   , bdescr) big_blocks;
-	void* root;
+	SLIST_HEAD( , mega_bdescr)   mega_blocks;
+	bdescr_queue_t blocks;
+	bdescr_queue_t free_blocks;
+	bdescr_queue_t big_blocks;
+	void** root;
 	void* stable_ptrs;
 };
 

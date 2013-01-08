@@ -35,8 +35,8 @@ static void* sysmalloc(size_t size){
 
 struct s_arena* new_arena(){
 	struct s_arena* arena = (struct s_arena*) malloc(sizeof(struct s_arena));
-	SLIST_INIT(&arena->blocks);
-	SLIST_INIT(&arena->free_blocks);
+	TAILQ_INIT(&arena->blocks);
+	TAILQ_INIT(&arena->free_blocks);
 	SLIST_INIT(&arena->mega_blocks);
 	debug("%s sizeof(single_bdescr) %0x, sizeof(big_bdescr) %0x, sizeof(void*) %0x\n",__FUNCTION__,sizeof(struct single_bdescr),sizeof(struct big_bdescr),sizeof(void*));
 	return arena;
@@ -126,36 +126,37 @@ struct big_bdescr* new_big_blocks(struct s_arena* arena, unsigned int count){
  */
 
 struct single_bdescr* find_new_single_block(struct s_arena* arena){
-	struct single_bdescr* res = (struct single_bdescr*)SLIST_FIRST(&(arena->free_blocks));
+	struct single_bdescr* res = (struct single_bdescr*)TAILQ_FIRST(&(arena->free_blocks));
 	if(res == NULL){
 		res = new_single_block(arena);
 	}else{
-		SLIST_REMOVE_HEAD(&(arena->free_blocks),link.list);
+		TAILQ_REMOVE(&(arena->free_blocks),TAILQ_FIRST(&(arena->free_blocks)),link);
 	}
 	init_single_block(res);
 	return res;
 }
 
 struct single_bdescr* find_current_single_block(struct s_arena* arena){
-	struct single_bdescr* res = (struct single_bdescr*)SLIST_FIRST(&(arena->blocks));
+	struct single_bdescr* res = (struct single_bdescr*)TAILQ_FIRST(&(arena->blocks));
 	if(res == NULL){
 		res = find_new_single_block(arena);
-		SLIST_INSERT_HEAD(&(arena->blocks),(struct bdescr*)res,link.list);
+		TAILQ_INSERT_HEAD(&(arena->blocks),(struct bdescr*)res,link);
 	}
 	return res;
 }
 void prepend_new_single_block(struct s_arena* arena){
 	struct single_bdescr* block = find_new_single_block(arena);
-	SLIST_INSERT_HEAD(&(arena->blocks),(struct bdescr*)block,link.list);
+	TAILQ_INSERT_HEAD(&(arena->blocks),(struct bdescr*)block,link);
 }
 
 void free_single_block(struct s_arena* arena,struct single_bdescr* block){
-	SLIST_INSERT_HEAD(&(arena->free_blocks),(struct bdescr*)block,link.list);
+//	TAILQ_REMOVE(&(arena->free_blocks),(struct bdescr*)block,link);
+	TAILQ_INSERT_HEAD(&(arena->free_blocks),(struct bdescr*)block,link);
 }
 
 struct big_bdescr* find_new_big_blocks(struct s_arena* arena, unsigned int count){
 	struct big_bdescr* big_block = new_big_blocks(arena,count);
-	SLIST_INSERT_HEAD(&(arena->big_blocks),(struct bdescr*)big_block,link.list);
+	TAILQ_INSERT_HEAD(&(arena->big_blocks),(struct bdescr*)big_block,link);
 	return big_block;
 }
 
@@ -164,12 +165,12 @@ void free_big_block(struct s_arena* arena,struct big_bdescr* block){
 	void* vblock = (void*) block;
 	/* moved to caller responsibility. */
 	/*
-	SLIST_REMOVE(&(arena->free_blocks),(struct bdescr*)block,bdescr,link.list);
+	TAILQ_REMOVE(&(arena->free_blocks),(struct bdescr*)block,bdescr,link);
 	*/
 	for(;count >0 ; count--){
 		struct single_bdescr* single_block = (struct single_bdescr*)vblock;
 		init_single_block(single_block);
-		SLIST_INSERT_HEAD(&(arena->free_blocks),(struct bdescr*)single_block,link.list);
+		TAILQ_INSERT_HEAD(&(arena->free_blocks),(struct bdescr*)single_block,link);
 		vblock += (BLOCK_SIZE / sizeof(void*));
 	}
 }
@@ -273,9 +274,9 @@ void* mem_allocate_with_finalizer(struct s_arena* arena, size_t size, unsigned i
 
 struct s_gc{
 	struct s_arena* arena;
-	STAILQ_HEAD(,bdescr) big_live_queue;
+	bdescr_queue_t big_live_queue;
 	struct big_bdescr* scavenging_big_object;
-	STAILQ_HEAD(,bdescr) to_space_queue;
+	bdescr_queue_t to_space_queue;
 	struct single_bdescr* to_space;
 	void* scavenging_object; 
 	unsigned long small_evaced;
@@ -293,9 +294,9 @@ void* find_big_object(struct s_gc* s_gc);
 
 static void init_gc(struct s_gc* s_gc,struct s_arena* arena){
 	s_gc->arena = arena;
-	STAILQ_INIT(&(s_gc->big_live_queue));
+	TAILQ_INIT(&(s_gc->big_live_queue));
 	s_gc->scavenging_big_object = NULL;
-	STAILQ_INIT(&(s_gc->to_space_queue));
+	TAILQ_INIT(&(s_gc->to_space_queue));
 	s_gc->to_space = NULL;
 	s_gc->scavenging_object = NULL;
 	s_gc->small_evaced = 0;
@@ -303,16 +304,16 @@ static void init_gc(struct s_gc* s_gc,struct s_arena* arena){
 }
 
 /* root must be alligned as sizeof(void*) */
-void mem_add_root(struct s_arena* arena, void* root){
+void mem_add_root(struct s_arena* arena, void** root){
 	arena->root = root;
 }
 
 void perform_gc(struct s_arena* arena){
 	struct s_gc s_gc;
 	init_gc(&s_gc,arena);
-	void* obj = arena->root;
+
 	/* phase 1 mark or evac root */
-	evacuate(&obj,&s_gc);
+	evacuate(arena->root,&s_gc);
 	
 	/* phase 2 process scavenge queue */
 	do{
@@ -331,25 +332,61 @@ void perform_gc(struct s_arena* arena){
 		break;
 	}while( 1 );
 
+	debug("========================================================\n",NULL);
 	debug("%s : small %016x(%d) big %016x(%d)\n",__FUNCTION__,s_gc.small_evaced,s_gc.small_evaced,s_gc.big_evaced,s_gc.big_evaced);
+	debug("========================================================\n",NULL);
 	
 	/* phase 3 adjust objects */
-	/* big objects : clear used bit & move to arena->blocks */
-	struct big_bdescr* big_block = (struct big_bdescr*)SLIST_FIRST(&(arena->big_blocks));
-	SLIST_EMPTY(&(arena->big_blocks));
-	do{
-		struct big_bdescr* new_big_block = (struct big_bdescr*)SLIST_NEXT((struct bdescr*)big_block,link.list);
-		if(big_block->used){
-			SLIST_INSERT_HEAD(&(arena->big_blocks),(struct bdescr*)big_block,link.list);
-			big_block-> used = 0;
-		} else {
-			/* finalize */
-			/* TODO if any finalizer, call here (before small blocks released)*/
-			free_big_block(arena,big_block);
-		}
-		big_block = new_big_block;
-	}while(big_block);
+	/* big dead objects : free */
+	struct bdescr* block;
+	block =  TAILQ_FIRST(&(arena->big_blocks));
+	while(block){
+		debug("-",NULL);
+		struct bdescr* new_block = TAILQ_NEXT(block,link);
+		debug("%s : %08x dead big\n",__FUNCTION__,(unsigned int)block);
+		/* finalize */
+		/* TODO if any finalizer, call here (before small blocks released)*/
+		free_big_block(arena,(struct big_bdescr*)block);
+		block = new_block;
+	}
+
+	/* big live objects : clear used bit & move to arena->blocks */
+	TAILQ_INIT(&(arena->big_blocks));
+	TAILQ_CONCAT(&(arena->big_blocks),&(s_gc.big_live_queue),link);
+
+	block =  TAILQ_FIRST(&(arena->big_blocks));
+	while(block){
+		debug("+",NULL);
+		struct bdescr* new_block = TAILQ_NEXT(block,link);
+		debug("%s : %08x live big\n",__FUNCTION__,(unsigned int)block);
+		((struct big_bdescr*)block)-> used = 0;
+		block = new_block;
+	}
+
 	/* free old spaces */
+	block = TAILQ_FIRST(&(arena->blocks));
+	while(block){
+		debug("-",NULL);
+		struct bdescr* next_block = TAILQ_NEXT(block,link);
+		free_single_block(arena,(struct single_bdescr*)block);
+		debug("%s : %08x dead small\n",__FUNCTION__,(unsigned int)block);
+		block = next_block;
+	}
+
+	/* TEST search live small area */
+	TAILQ_INIT(&(arena->blocks));
+	TAILQ_CONCAT(&(arena->blocks),&(s_gc.to_space_queue),link);
+
+	block = TAILQ_FIRST(&(arena->blocks));
+	while(block){
+		debug("+",NULL);
+		struct bdescr* next_block = TAILQ_NEXT(block,link);
+		debug("%s : %08x live small\n",__FUNCTION__,(unsigned int)block);
+		block = next_block;
+	}
+	debug("========================================================\n",NULL);
+	debug("%s : end\n",__FUNCTION__);
+	debug("========================================================\n",NULL);
 }
 
 /* pop object to be scavenged. */
@@ -359,7 +396,7 @@ void* find_small_object(struct s_gc* s_gc){
 	struct single_bdescr* to_space;
 	if(s_gc->scavenging_object == NULL){
 		/* not initialized :  scavenging_object points to the before head. */
-		to_space = (struct single_bdescr*)STAILQ_FIRST(&(s_gc->to_space_queue));
+		to_space = (struct single_bdescr*)TAILQ_FIRST(&(s_gc->to_space_queue));
 		debug("%s : to_space : %08x\n",__FUNCTION__,(unsigned int)to_space);
 		if(to_space == NULL){
 			/* no to_space. no object to scavenge. */
@@ -373,7 +410,7 @@ void* find_small_object(struct s_gc* s_gc){
 	debug("%s : scavenging object : %08x size : %08x\n",__FUNCTION__,(unsigned int)s_gc->scavenging_object,size_in_words);
 	if(size_in_words == 0){
 		/* not found at s_gc->scavenging_object. but may be found in next block. */
-		to_space = (struct single_bdescr*)STAILQ_NEXT((struct bdescr*)to_space,link.tailq);
+		to_space = (struct single_bdescr*)TAILQ_NEXT((struct bdescr*)to_space,link);
 		if(to_space == NULL){
 			/* no to_space. no object to scavenge. */
 			return NULL;
@@ -400,12 +437,12 @@ void* find_small_object(struct s_gc* s_gc){
 	} else {
 		debug("%s : terrible point\n",__FUNCTION__);
 		/* shift to next page */
-		to_space = (struct single_bdescr*)STAILQ_NEXT((struct bdescr*)to_space,link.tailq);
+		to_space = (struct single_bdescr*)TAILQ_NEXT((struct bdescr*)to_space,link);
 		if(to_space == NULL){
 			/* force prepare for next page */
 			debug("%s : force prepare for next page\n",__FUNCTION__);
 			struct single_bdescr* new_block = find_new_single_block(s_gc->arena);
-			STAILQ_INSERT_TAIL(&(s_gc->to_space_queue),(struct bdescr*)new_block,link.tailq);
+			TAILQ_INSERT_TAIL(&(s_gc->to_space_queue),(struct bdescr*)new_block,link);
 		}
 		debug("%s : old scavenging object : %08x size : %08x\n",__FUNCTION__,(unsigned int)s_gc->scavenging_object,size_in_words);
 		s_gc->scavenging_object = (void*)(((void**)to_space)+(WORDS_OF_TYPE(struct single_bdescr)) + 1);
@@ -421,7 +458,7 @@ void* find_big_object(struct s_gc* s_gc){
 	/* two quite similar pathes exist. but we don't merge them for later debugging. */
 	if(s_gc->scavenging_big_object == NULL){
 		/* not initialized :  scavenging_big_object points to the before head. */
-		big_block = (struct big_bdescr*)STAILQ_FIRST(&(s_gc->big_live_queue));
+		big_block = (struct big_bdescr*)TAILQ_FIRST(&(s_gc->big_live_queue));
 		if(big_block != NULL){
 			/* object to scavenge */
 			s_gc->scavenging_big_object = big_block;
@@ -432,7 +469,7 @@ void* find_big_object(struct s_gc* s_gc){
 			return NULL;
 		}
 	}else{
-		big_block = (struct big_bdescr*)STAILQ_NEXT((struct bdescr*)s_gc->scavenging_big_object,link.tailq);
+		big_block = (struct big_bdescr*)TAILQ_NEXT((struct bdescr*)s_gc->scavenging_big_object,link);
 		if(big_block != NULL){
 			s_gc->scavenging_big_object = big_block;
 		} else {
@@ -445,7 +482,7 @@ void* find_big_object(struct s_gc* s_gc){
 
 /* create to space if neccesarry (can't store the size of the object) */
 void check_to_space(size_t size_in_word,struct s_gc* s_gc){
-	struct single_bdescr* to_space = (struct single_bdescr*)STAILQ_FIRST(&(s_gc->to_space_queue));
+	struct single_bdescr* to_space = (struct single_bdescr*)TAILQ_FIRST(&(s_gc->to_space_queue));
 	if(to_space == NULL || (to_space->cur_words+size_in_word)*sizeof(void*) > BLOCK_SIZE){
 		if(to_space != NULL){
 			/* mark this area is not used. */
@@ -453,7 +490,7 @@ void check_to_space(size_t size_in_word,struct s_gc* s_gc){
 		}
 		/* prepare next to_space */
 		to_space = find_new_single_block(s_gc->arena);
-		STAILQ_INSERT_TAIL(&(s_gc->to_space_queue),(struct bdescr*)to_space,link.tailq);
+		TAILQ_INSERT_TAIL(&(s_gc->to_space_queue),(struct bdescr*)to_space,link);
 	}
 	s_gc->to_space = to_space;
 }
@@ -479,7 +516,6 @@ void** copy_obj(void** obj,struct single_bdescr* to_space,size_t size_in_word){
 }
 
 /* *src is a tag tainted pointer */
-/* obj is non-used value */
 void evacuate_small(void** src, struct s_gc* s_gc){
 	void** obj_ptr = (void**) PTR_BITS(*src);
 	if(IS_FORWARDED(obj_ptr)){
@@ -497,7 +533,7 @@ void evacuate_small(void** src, struct s_gc* s_gc){
 		*((obj_ptr)-1) = (void*)(FORWARD_MASK | (unsigned int)(new_ptr));
 		/* UPDATING SOURCE (with tag) */
 		*(src)         = (void*)((unsigned int) (new_ptr) | SAVED_BITS(*src));
-		debug("%s : evacuated. blow is the old object\n",__FUNCTION__);
+		debug("%s : evacuated. the old object is now as below:\n",__FUNCTION__);
 		dump_small(obj_ptr,size_in_word);
 		s_gc->small_evaced ++;
 	}
@@ -507,7 +543,8 @@ void evacuate_small(void** src, struct s_gc* s_gc){
 void evacuate_big(void** src, struct s_gc* s_gc){
 	struct big_bdescr* big_block = (struct big_bdescr*)GET_BLOCK(*src);
 	if(! big_block->used){
-		/* TODO add to live queue, remove from old list */
+		TAILQ_REMOVE(&(s_gc->arena->big_blocks),(struct bdescr*)big_block,link);
+		TAILQ_INSERT_TAIL(&(s_gc->big_live_queue),(struct bdescr*)big_block,link);
 		big_block->used = 1;
 		s_gc->big_evaced ++;
 	}
