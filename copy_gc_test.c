@@ -46,7 +46,7 @@ void dump_naive(void* ptr,size_t size){
 			printf("%02x ",*(p+i));
 			break;
 		}
-#if 0
+#if 1
 		if((i == 31) && (size > 64) ){
 			printf("       :\n");
 			i += ((size / 16) -sizeof(void*)) * 16;
@@ -152,6 +152,7 @@ int main(int argc,char** argv){
 		perform_gc(arena);
 	}
 #endif
+#if 0
 	{
 		// with forwarding
 		void* ptr;
@@ -170,16 +171,75 @@ int main(int argc,char** argv){
 			printf("alloc big   : %08x\n",(unsigned int)big_ptr);
 			for(j = 0; j < i ; j++){
 				((void***)ptr)[i][j] = ((j%2)==0?small_ptr:big_ptr);
-//				printf("alloc : %08x\n",(unsigned int)((void***)ptr)[i][j]);
 			}
 		}
 		printf("dumping ptr:  %08x\n",ptr);
 		dump_small(ptr,10);
 		perform_gc(arena);
 		perform_gc(arena);
-//		perform_gc(arena);
 	}
+#endif
+#if 0
+	{
+		// with forwarding
+		void* ptr;
+		arena = new_arena();
+		ptr = mem_allocate(arena, 10, 10);
+		printf("root alloc : %08x\n",(unsigned int)ptr);
+		mem_add_root(arena,&ptr);
+		int i;
+		for(i=0;i<10;i++){
+			int j;
+			((void**)ptr)[i] = mem_allocate(arena, (i+1)*10, i);
+			printf("alloc : %08x\n",(unsigned int)((void**)ptr)[i]);
+			void* small_ptr = mem_allocate(arena, 8, 0);
+			void* big_ptr   = mem_allocate(arena, 256, 0);
+			printf("alloc small : %08x\n",(unsigned int)small_ptr);
+			printf("alloc big   : %08x\n",(unsigned int)big_ptr);
+			for(j = 0; j < i ; j++){
+				((void***)ptr)[i][j] = ((j%2)==0?small_ptr:big_ptr);
+			}
+		}
+		printf("dumping ptr:  %08x\n",ptr);
+		dump_small(ptr,10);
+		perform_gc(arena);
+		ptr = mem_allocate(arena, 10, 0);
+		perform_gc(arena);
+		perform_gc(arena);
+	}
+#endif
+#if 1
+	{
+		// with forwarding
+		void* ptr;
+		arena = new_arena();
+		ptr = mem_allocate(arena, 10, 10);
+		printf("root alloc : %08x\n",(unsigned int)ptr);
+		mem_add_root(arena,&ptr);
+		int i;
+		for(i=0;i<10;i++){
+			int j;
+			((void**)ptr)[i] = mem_allocate(arena, (i+1)*10, i);
+			printf("alloc : %08x\n",(unsigned int)((void**)ptr)[i]);
+			void* small_ptr = mem_allocate(arena, 8, 1);
+			void* big_ptr   = mem_allocate(arena, 256, 1);
+			((void**)small_ptr)[0] = ((void**)ptr)[i];
+			((void**)big_ptr)[0] = ((void**)ptr)[i];
+			printf("alloc small : %08x\n",(unsigned int)small_ptr);
+			printf("alloc big   : %08x\n",(unsigned int)big_ptr);
+			for(j = 0; j < i ; j++){
+				((void***)ptr)[i][j] = ((j%2)==0?small_ptr:big_ptr);
+			}
+		}
+		printf("dumping ptr:  %08x\n",ptr);
+		perform_gc(arena);
+		for(i = 0 ; i < 10; i++){
+			((void**)ptr)[i] = ptr;
+		}
+		perform_gc(arena);
+	}
+#endif
 	/*  */
 	return 0;
 }
-	
+

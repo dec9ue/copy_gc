@@ -575,7 +575,6 @@ void scavenge_big(void *obj, struct s_gc* s_gc){
 void evacuate(void** src, struct s_gc* s_gc){
 	debug("%s : *src  %08x\n",__FUNCTION__,(unsigned int)(*src));
 	debug("%s : BLOCK %08x\n",__FUNCTION__,(unsigned int)GET_BLOCK(*src));
-//	dump(GET_BLOCK(*src),32);
 	enum e_descr_type e = BLOCK_TYPE(*src);
 
 	if (e == E_BLOCK_SINGLE){
