@@ -133,6 +133,7 @@ struct big_bdescr* new_big_blocks(struct s_arena* arena, unsigned int count){
  *******************************
  */
 
+/** finds free single_block, or crete new single_block */
 struct single_bdescr* find_new_single_block(struct s_arena* arena){
 	struct single_bdescr* res = (struct single_bdescr*)TAILQ_FIRST(&(arena->free_blocks));
 	if(res == NULL){
@@ -144,6 +145,7 @@ struct single_bdescr* find_new_single_block(struct s_arena* arena){
 	return res;
 }
 
+/** returns recent used block, if no block, augments new block and returns it. */
 struct single_bdescr* find_current_single_block(struct s_arena* arena){
 	struct single_bdescr* res = (struct single_bdescr*)TAILQ_FIRST(&(arena->blocks));
 	if(res == NULL){
@@ -152,22 +154,26 @@ struct single_bdescr* find_current_single_block(struct s_arena* arena){
 	}
 	return res;
 }
+
+/** prepend new block to currently used blocks */
 void prepend_new_single_block(struct s_arena* arena){
 	struct single_bdescr* block = find_new_single_block(arena);
 	TAILQ_INSERT_HEAD(&(arena->blocks),(struct bdescr*)block,link);
 }
 
+/** prepend block to free block list. note this function does not remove it from live blocks */
 void free_single_block(struct s_arena* arena,struct single_bdescr* block){
-//	TAILQ_REMOVE(&(arena->free_blocks),(struct bdescr*)block,link);
 	TAILQ_INSERT_HEAD(&(arena->free_blocks),(struct bdescr*)block,link);
 }
 
+/** new big_block allocated. */
 struct big_bdescr* find_new_big_blocks(struct s_arena* arena, unsigned int count){
 	struct big_bdescr* big_block = new_big_blocks(arena,count);
 	TAILQ_INSERT_HEAD(&(arena->big_blocks),(struct bdescr*)big_block,link);
 	return big_block;
 }
 
+/** prepend big block to free block list. note this function does not remove it from live blocks */
 void free_big_block(struct s_arena* arena,struct big_bdescr* block){
 	unsigned int count = block->nblocks;
 	void* vblock = (void*) block;
@@ -194,8 +200,8 @@ void free_big_block(struct s_arena* arena,struct big_bdescr* block){
 #define GET_NPTR(x)   (((*(((unsigned int*)x)-1))>>12) & 0x3ff)
 #define SET_NPTR(x,n) do{*(((unsigned int*)x)-1)|=((n&0x3ff)<<12);}while(0)
 
+/** allocate big block */
 static void* mem_big_allocate(struct s_arena* arena, size_t size_in_words, unsigned int nptrs){
-	/* TODO THIS MAY CONATIN ALIGNMENT BUG */
 	unsigned int block_counts = ((WORDS_OF_TYPE(struct big_bdescr)+size_in_words-1)*sizeof(void*))/BLOCK_SIZE + 1;
 	debug("%s big_block size_in_words: %d block_counts : %d\n",__FUNCTION__,size_in_words,block_counts);
 	struct big_bdescr* big_block = find_new_big_blocks(arena,block_counts);
@@ -204,8 +210,8 @@ static void* mem_big_allocate(struct s_arena* arena, size_t size_in_words, unsig
 	return sizeof(struct big_bdescr) + (unsigned char*)big_block;
 }
 
+/** allocate small block */
 static void* mem_small_allocate(struct s_arena* arena, size_t size_in_words, unsigned int nptrs){
-	/* TODO THIS MAY CONATIN ALIGNMENT BUG */
 	void* ptr;
  	struct single_bdescr* single_block = find_current_single_block(arena);
 	const int block_offset_words = WORDS_OF_TYPE(struct single_bdescr);
@@ -240,7 +246,7 @@ static void* mem_small_allocate(struct s_arena* arena, size_t size_in_words, uns
 	return ptr;
 }
 
-/* here , size_t size in bytes , not words */
+/** allocate memory despite of its size */
 void* mem_allocate(struct s_arena* arena, size_t size_in_words, unsigned int nptrs){
 	void* ptr;
 	if( size_in_words > BIG_THREASHOLD){
@@ -251,9 +257,9 @@ void* mem_allocate(struct s_arena* arena, size_t size_in_words, unsigned int npt
 	return (void*)ptr;
 }
 
+/** allocate memory with finalizer. this function is not tested. */
 void* mem_allocate_with_finalizer(struct s_arena* arena, size_t size, unsigned int nptrs,void (*finalizer)()){
 	/* BIG */
-	/* TODO THIS MAY CONATIN ALIGNMENT BUG */
 	/* TODO ADD FILNALIZER SUPPORT */
 	void* ptr;
 	unsigned int block_counts = (sizeof(struct big_bdescr)+sizeof(void*)*size-1)/BLOCK_SIZE + 1;
@@ -276,7 +282,6 @@ void* mem_allocate_with_finalizer(struct s_arena* arena, size_t size, unsigned i
 #define BLOCK_TYPE(x) (((struct bdescr*)GET_BLOCK(x))->type)
 
 #define FORWARD_MASK  0x1
-//#define IS_FORWARDED(x)  ((unsigned int)(((void**)x) -1)& FORWARD_MASK)
 #define IS_FORWARDED(x)  (((*(((unsigned int*)x)-1)) & FORWARD_MASK) == FORWARD_MASK)
 #define FORWARDED_PTR(x) ((void*)(PTR_BITS(*(unsigned int*)(((void**)x) -1))))
 
@@ -291,7 +296,6 @@ struct s_gc{
 	unsigned long big_evaced;
 };
 
-//void scavenge(void** src, struct s_gc* s_gc);
 void evacuate(void** src, struct s_gc* s_gc);
 void scavenge_small(void* obj, struct s_gc* s_gc);
 void evacuate_small(void** src, struct s_gc* s_gc);
@@ -381,10 +385,11 @@ void perform_gc(struct s_arena* arena){
 		block = next_block;
 	}
 
-	/* TEST search live small area */
+	/* move live small area */
 	TAILQ_INIT(&(arena->blocks));
 	TAILQ_CONCAT(&(arena->blocks),&(s_gc.to_space_queue),link);
 
+#ifdef CGC_DEBUG
 	block = TAILQ_FIRST(&(arena->blocks));
 	while(block){
 		debug("+",NULL);
@@ -392,6 +397,7 @@ void perform_gc(struct s_arena* arena){
 		debug("%s : %08x live small\n",__FUNCTION__,(unsigned int)block);
 		block = next_block;
 	}
+#endif
 	debug("========================================================\n",NULL);
 	debug("%s : end\n",__FUNCTION__);
 	debug("========================================================\n",NULL);
@@ -597,6 +603,7 @@ void evacuate(void** src, struct s_gc* s_gc){
 	}
 }
 
+/** debug function. dump to stdout. */
 void dump_naive(void* ptr,size_t size){
 #ifdef CGC_DEBUG
 	unsigned char* p = ((unsigned char*)ptr);
@@ -627,6 +634,7 @@ void dump_naive(void* ptr,size_t size){
 #endif
 }
 
+/** debug function. dump to stdout. */
 void dump_small(void*ptr,size_t size_in_words){
 #ifdef CGC_DEBUG
 	void* head = *(((void**)ptr)-1);
