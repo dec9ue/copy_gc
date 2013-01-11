@@ -1,0 +1,1277 @@
+new_arena sizeof(single_bdescr) 10, sizeof(big_bdescr) 1c, sizeof(void*) 4
+new megablock at b7400000
+old megablock : b7400000
+new megablock : b7401000
+new single block at b7400000
+mem_small_allocate : 2 single_bloc b7400000 cur_words 0000000f target b740003c
+mem_small_allocate small_block size : 40 size_in_words : 10
+root alloc : b7400014
+mem_small_allocate : 2 single_bloc b7400000 cur_words 0000001a target b7400068
+mem_small_allocate small_block size : 40 size_in_words : 10
+alloc : b7400040
+mem_small_allocate : 2 single_bloc b7400000 cur_words 00000023 target b740008c
+mem_small_allocate small_block size : 32 size_in_words : 8
+mem_big_allocate big_block size_in_words: 256 block_counts : 1
+old megablock : b7401000
+new megablock : b7402000
+new big block at b7401000
+alloc small : b740006c
+alloc big   : b740101c
+mem_small_allocate : 2 single_bloc b7400000 cur_words 00000038 target b74000e0
+mem_small_allocate small_block size : 80 size_in_words : 20
+alloc : b7400090
+mem_small_allocate : 2 single_bloc b7400000 cur_words 00000041 target b7400104
+mem_small_allocate small_block size : 32 size_in_words : 8
+mem_big_allocate big_block size_in_words: 256 block_counts : 1
+old megablock : b7402000
+new megablock : b7403000
+new big block at b7402000
+alloc small : b74000e4
+alloc big   : b740201c
+mem_small_allocate : 2 single_bloc b7400000 cur_words 00000060 target b7400180
+mem_small_allocate small_block size : 120 size_in_words : 30
+alloc : b7400108
+mem_small_allocate : 2 single_bloc b7400000 cur_words 00000069 target b74001a4
+mem_small_allocate small_block size : 32 size_in_words : 8
+mem_big_allocate big_block size_in_words: 256 block_counts : 1
+old megablock : b7403000
+new megablock : b7404000
+new big block at b7403000
+alloc small : b7400184
+alloc big   : b740301c
+mem_small_allocate : 2 single_bloc b7400000 cur_words 00000092 target b7400248
+mem_small_allocate small_block size : 160 size_in_words : 40
+alloc : b74001a8
+mem_small_allocate : 2 single_bloc b7400000 cur_words 0000009b target b740026c
+mem_small_allocate small_block size : 32 size_in_words : 8
+mem_big_allocate big_block size_in_words: 256 block_counts : 1
+old megablock : b7404000
+new megablock : b7405000
+new big block at b7404000
+alloc small : b740024c
+alloc big   : b740401c
+mem_small_allocate : 2 single_bloc b7400000 cur_words 000000ce target b7400338
+mem_small_allocate small_block size : 200 size_in_words : 50
+alloc : b7400270
+mem_small_allocate : 2 single_bloc b7400000 cur_words 000000d7 target b740035c
+mem_small_allocate small_block size : 32 size_in_words : 8
+mem_big_allocate big_block size_in_words: 256 block_counts : 1
+old megablock : b7405000
+new megablock : b7406000
+new big block at b7405000
+alloc small : b740033c
+alloc big   : b740501c
+mem_small_allocate : 2 single_bloc b7400000 cur_words 00000114 target b7400450
+mem_small_allocate small_block size : 240 size_in_words : 60
+alloc : b7400360
+mem_small_allocate : 2 single_bloc b7400000 cur_words 0000011d target b7400474
+mem_small_allocate small_block size : 32 size_in_words : 8
+mem_big_allocate big_block size_in_words: 256 block_counts : 1
+old megablock : b7406000
+new megablock : b7407000
+new big block at b7406000
+alloc small : b7400454
+alloc big   : b740601c
+mem_big_allocate big_block size_in_words: 70 block_counts : 1
+old megablock : b7407000
+new megablock : b7408000
+new big block at b7407000
+alloc : b740701c
+mem_small_allocate : 2 single_bloc b7400000 cur_words 00000126 target b7400498
+mem_small_allocate small_block size : 32 size_in_words : 8
+mem_big_allocate big_block size_in_words: 256 block_counts : 1
+old megablock : b7408000
+new megablock : b7409000
+new big block at b7408000
+alloc small : b7400478
+alloc big   : b740801c
+mem_big_allocate big_block size_in_words: 80 block_counts : 1
+old megablock : b7409000
+new megablock : b740a000
+new big block at b7409000
+alloc : b740901c
+mem_small_allocate : 2 single_bloc b7400000 cur_words 0000012f target b74004bc
+mem_small_allocate small_block size : 32 size_in_words : 8
+mem_big_allocate big_block size_in_words: 256 block_counts : 1
+old megablock : b740a000
+new megablock : b740b000
+new big block at b740a000
+alloc small : b740049c
+alloc big   : b740a01c
+mem_big_allocate big_block size_in_words: 90 block_counts : 1
+old megablock : b740b000
+new megablock : b740c000
+new big block at b740b000
+alloc : b740b01c
+mem_small_allocate : 2 single_bloc b7400000 cur_words 00000138 target b74004e0
+mem_small_allocate small_block size : 32 size_in_words : 8
+mem_big_allocate big_block size_in_words: 256 block_counts : 1
+old megablock : b740c000
+new megablock : b740d000
+new big block at b740c000
+alloc small : b74004c0
+alloc big   : b740c01c
+mem_big_allocate big_block size_in_words: 100 block_counts : 1
+old megablock : b740d000
+new megablock : b740e000
+new big block at b740d000
+alloc : b740d01c
+mem_small_allocate : 2 single_bloc b7400000 cur_words 00000141 target b7400504
+mem_small_allocate small_block size : 32 size_in_words : 8
+mem_big_allocate big_block size_in_words: 256 block_counts : 1
+old megablock : b740e000
+new megablock : b740f000
+new big block at b740e000
+alloc small : b74004e4
+alloc big   : b740e01c
+dumping ptr:  b7400014
+size : 0000000a(10) nptrs : 0000000a(10) (ptr : 0000a028)
+b7400010 : 28 a0 00 00 40 00 40 b7 90 00 40 b7 08 01 40 b7
+b7400020 : a8 01 40 b7 70 02 40 b7 60 03 40 b7 1c 70 40 b7
+b7400030 : 1c 90 40 b7 1c b0 40 b7 1c d0 40 b7 28 00 00 00
+evacuate : *src  b7400014
+evacuate : BLOCK b7400000
+evacuate : small
+old megablock : b740f000
+new megablock : b7410000
+new single block at b740f000
+copy_obj : new_ptr b740f014 to_space b740f000 src_obj b7400014 size 10
+size : 0000000a(10) nptrs : 0000000a(10) (ptr : 0000a028)
+b7400010 : 28 a0 00 00 40 00 40 b7 90 00 40 b7 08 01 40 b7
+b7400020 : a8 01 40 b7 70 02 40 b7 60 03 40 b7 1c 70 40 b7
+b7400030 : 1c 90 40 b7 1c b0 40 b7 1c d0 40 b7 28 00 00 00
+size : 0000000a(10) nptrs : 0000000a(10) (ptr : 0000a028)
+b740f010 : 28 a0 00 00 40 00 40 b7 90 00 40 b7 08 01 40 b7
+b740f020 : a8 01 40 b7 70 02 40 b7 60 03 40 b7 1c 70 40 b7
+b740f030 : 1c 90 40 b7 1c b0 40 b7 1c d0 40 b7 00 00 00 00
+evacuate_small : evacuated. the old object is now as below:
+ptr : b740f015
+b7400010 : 15 f0 40 b7 40 00 40 b7 90 00 40 b7 08 01 40 b7
+b7400020 : a8 01 40 b7 70 02 40 b7 60 03 40 b7 1c 70 40 b7
+b7400030 : 1c 90 40 b7 1c b0 40 b7 1c d0 40 b7 28 00 00 00
+find_small_object : to_space : b740f000
+find_small_object : scavenging object : b740f014 size : 0000000a
+find_small_object : old scavenging object : b740f014 size : 0000000a
+find_small_object : new scavenging object : b740f040 size : 0000000a
+scavenge_small : obj   b740f014 nptr: 10 (s:10 n:10)
+evacuate : *src  b7400040
+evacuate : BLOCK b7400000
+evacuate : small
+copy_obj : new_ptr b740f040 to_space b740f000 src_obj b7400040 size 10
+size : 0000000a(10) nptrs : 00000000(0) (ptr : 00000028)
+b740003c : 28 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740004c : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740005c : 00 00 00 00 00 00 00 00 00 00 00 00 20 00 00 00
+size : 0000000a(10) nptrs : 00000000(0) (ptr : 00000028)
+b740f03c : 28 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740f04c : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740f05c : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+evacuate_small : evacuated. the old object is now as below:
+ptr : b740f041
+b740003c : 41 f0 40 b7 00 00 00 00 00 00 00 00 00 00 00 00
+b740004c : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740005c : 00 00 00 00 00 00 00 00 00 00 00 00 20 00 00 00
+evacuate : *src  b7400090
+evacuate : BLOCK b7400000
+evacuate : small
+copy_obj : new_ptr b740f06c to_space b740f000 src_obj b7400090 size 20
+size : 00000014(20) nptrs : 00000001(1) (ptr : 00001050)
+b740008c : 50 10 00 00 e4 00 40 b7 00 00 00 00 00 00 00 00
+b740009c : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+       :
+b74000bc : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b74000cc : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b74000dc : 00 00 00 00 20 00 00 00 
+size : 00000014(20) nptrs : 00000001(1) (ptr : 00001050)
+b740f068 : 50 10 00 00 e4 00 40 b7 00 00 00 00 00 00 00 00
+b740f078 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+       :
+b740f098 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740f0a8 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740f0b8 : 00 00 00 00 00 00 00 00 
+evacuate_small : evacuated. the old object is now as below:
+ptr : b740f06d
+b740008c : 6d f0 40 b7 e4 00 40 b7 00 00 00 00 00 00 00 00
+b740009c : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+       :
+b74000bc : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b74000cc : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b74000dc : 00 00 00 00 20 00 00 00 
+evacuate : *src  b7400108
+evacuate : BLOCK b7400000
+evacuate : small
+copy_obj : new_ptr b740f0c0 to_space b740f000 src_obj b7400108 size 30
+size : 0000001e(30) nptrs : 00000002(2) (ptr : 00002078)
+b7400104 : 78 20 00 00 84 01 40 b7 1c 30 40 b7 00 00 00 00
+b7400114 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+       :
+b7400164 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b7400174 : 00 00 00 00 00 00 00 00 00 00 00 00 20 00 00 00
+size : 0000001e(30) nptrs : 00000002(2) (ptr : 00002078)
+b740f0bc : 78 20 00 00 84 01 40 b7 1c 30 40 b7 00 00 00 00
+b740f0cc : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+       :
+b740f11c : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740f12c : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+evacuate_small : evacuated. the old object is now as below:
+ptr : b740f0c1
+b7400104 : c1 f0 40 b7 84 01 40 b7 1c 30 40 b7 00 00 00 00
+b7400114 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+       :
+b7400164 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b7400174 : 00 00 00 00 00 00 00 00 00 00 00 00 20 00 00 00
+evacuate : *src  b74001a8
+evacuate : BLOCK b7400000
+evacuate : small
+copy_obj : new_ptr b740f13c to_space b740f000 src_obj b74001a8 size 40
+size : 00000028(40) nptrs : 00000003(3) (ptr : 000030a0)
+b74001a4 : a0 30 00 00 4c 02 40 b7 1c 40 40 b7 4c 02 40 b7
+b74001b4 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+       :
+b7400224 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b7400234 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b7400244 : 00 00 00 00 20 00 00 00 
+size : 00000028(40) nptrs : 00000003(3) (ptr : 000030a0)
+b740f138 : a0 30 00 00 4c 02 40 b7 1c 40 40 b7 4c 02 40 b7
+b740f148 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+       :
+b740f1b8 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740f1c8 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740f1d8 : 00 00 00 00 00 00 00 00 
+evacuate_small : evacuated. the old object is now as below:
+ptr : b740f13d
+b74001a4 : 3d f1 40 b7 4c 02 40 b7 1c 40 40 b7 4c 02 40 b7
+b74001b4 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+       :
+b7400224 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b7400234 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b7400244 : 00 00 00 00 20 00 00 00 
+evacuate : *src  b7400270
+evacuate : BLOCK b7400000
+evacuate : small
+copy_obj : new_ptr b740f1e0 to_space b740f000 src_obj b7400270 size 50
+size : 00000032(50) nptrs : 00000004(4) (ptr : 000040c8)
+b740026c : c8 40 00 00 3c 03 40 b7 1c 50 40 b7 3c 03 40 b7
+b740027c : 1c 50 40 b7 00 00 00 00 00 00 00 00 00 00 00 00
+       :
+b740031c : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740032c : 00 00 00 00 00 00 00 00 00 00 00 00 20 00 00 00
+size : 00000032(50) nptrs : 00000004(4) (ptr : 000040c8)
+b740f1dc : c8 40 00 00 3c 03 40 b7 1c 50 40 b7 3c 03 40 b7
+b740f1ec : 1c 50 40 b7 00 00 00 00 00 00 00 00 00 00 00 00
+       :
+b740f28c : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740f29c : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+evacuate_small : evacuated. the old object is now as below:
+ptr : b740f1e1
+b740026c : e1 f1 40 b7 3c 03 40 b7 1c 50 40 b7 3c 03 40 b7
+b740027c : 1c 50 40 b7 00 00 00 00 00 00 00 00 00 00 00 00
+       :
+b740031c : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740032c : 00 00 00 00 00 00 00 00 00 00 00 00 20 00 00 00
+evacuate : *src  b7400360
+evacuate : BLOCK b7400000
+evacuate : small
+copy_obj : new_ptr b740f2ac to_space b740f000 src_obj b7400360 size 60
+size : 0000003c(60) nptrs : 00000005(5) (ptr : 000050f0)
+b740035c : f0 50 00 00 54 04 40 b7 1c 60 40 b7 54 04 40 b7
+b740036c : 1c 60 40 b7 54 04 40 b7 00 00 00 00 00 00 00 00
+       :
+b740042c : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740043c : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740044c : 00 00 00 00 20 00 00 00 
+size : 0000003c(60) nptrs : 00000005(5) (ptr : 000050f0)
+b740f2a8 : f0 50 00 00 54 04 40 b7 1c 60 40 b7 54 04 40 b7
+b740f2b8 : 1c 60 40 b7 54 04 40 b7 00 00 00 00 00 00 00 00
+       :
+b740f378 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740f388 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740f398 : 00 00 00 00 00 00 00 00 
+evacuate_small : evacuated. the old object is now as below:
+ptr : b740f2ad
+b740035c : ad f2 40 b7 54 04 40 b7 1c 60 40 b7 54 04 40 b7
+b740036c : 1c 60 40 b7 54 04 40 b7 00 00 00 00 00 00 00 00
+       :
+b740042c : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740043c : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740044c : 00 00 00 00 20 00 00 00 
+evacuate : *src  b740701c
+evacuate : BLOCK b7407000
+evacuate : big
+evacuate : *src  b740901c
+evacuate : BLOCK b7409000
+evacuate : big
+evacuate : *src  b740b01c
+evacuate : BLOCK b740b000
+evacuate : big
+evacuate : *src  b740d01c
+evacuate : BLOCK b740d000
+evacuate : big
+find_small_object : scavenging object : b740f040 size : 0000000a
+find_small_object : old scavenging object : b740f040 size : 0000000a
+find_small_object : new scavenging object : b740f06c size : 0000000a
+scavenge_small : obj   b740f040 nptr: 0 (s:10 n:0)
+find_small_object : scavenging object : b740f06c size : 00000014
+find_small_object : old scavenging object : b740f06c size : 00000014
+find_small_object : new scavenging object : b740f0c0 size : 00000014
+scavenge_small : obj   b740f06c nptr: 1 (s:20 n:1)
+evacuate : *src  b74000e4
+evacuate : BLOCK b7400000
+evacuate : small
+copy_obj : new_ptr b740f3a0 to_space b740f000 src_obj b74000e4 size 8
+size : 00000008(8) nptrs : 00000000(0) (ptr : 00000020)
+b74000e0 : 20 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b74000f0 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b7400100 : 00 00 00 00 c1 f0 40 b7 
+size : 00000008(8) nptrs : 00000000(0) (ptr : 00000020)
+b740f39c : 20 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740f3ac : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740f3bc : 00 00 00 00 00 00 00 00 
+evacuate_small : evacuated. the old object is now as below:
+ptr : b740f3a1
+b74000e0 : a1 f3 40 b7 00 00 00 00 00 00 00 00 00 00 00 00
+b74000f0 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b7400100 : 00 00 00 00 c1 f0 40 b7 
+find_small_object : scavenging object : b740f0c0 size : 0000001e
+find_small_object : old scavenging object : b740f0c0 size : 0000001e
+find_small_object : new scavenging object : b740f13c size : 0000001e
+scavenge_small : obj   b740f0c0 nptr: 2 (s:30 n:2)
+evacuate : *src  b7400184
+evacuate : BLOCK b7400000
+evacuate : small
+copy_obj : new_ptr b740f3c4 to_space b740f000 src_obj b7400184 size 8
+size : 00000008(8) nptrs : 00000000(0) (ptr : 00000020)
+b7400180 : 20 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b7400190 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b74001a0 : 00 00 00 00 3d f1 40 b7 
+size : 00000008(8) nptrs : 00000000(0) (ptr : 00000020)
+b740f3c0 : 20 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740f3d0 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740f3e0 : 00 00 00 00 00 00 00 00 
+evacuate_small : evacuated. the old object is now as below:
+ptr : b740f3c5
+b7400180 : c5 f3 40 b7 00 00 00 00 00 00 00 00 00 00 00 00
+b7400190 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b74001a0 : 00 00 00 00 3d f1 40 b7 
+evacuate : *src  b740301c
+evacuate : BLOCK b7403000
+evacuate : big
+find_small_object : scavenging object : b740f13c size : 00000028
+find_small_object : old scavenging object : b740f13c size : 00000028
+find_small_object : new scavenging object : b740f1e0 size : 00000028
+scavenge_small : obj   b740f13c nptr: 3 (s:40 n:3)
+evacuate : *src  b740024c
+evacuate : BLOCK b7400000
+evacuate : small
+copy_obj : new_ptr b740f3e8 to_space b740f000 src_obj b740024c size 8
+size : 00000008(8) nptrs : 00000000(0) (ptr : 00000020)
+b7400248 : 20 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b7400258 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b7400268 : 00 00 00 00 e1 f1 40 b7 
+size : 00000008(8) nptrs : 00000000(0) (ptr : 00000020)
+b740f3e4 : 20 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740f3f4 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740f404 : 00 00 00 00 00 00 00 00 
+evacuate_small : evacuated. the old object is now as below:
+ptr : b740f3e9
+b7400248 : e9 f3 40 b7 00 00 00 00 00 00 00 00 00 00 00 00
+b7400258 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b7400268 : 00 00 00 00 e1 f1 40 b7 
+evacuate : *src  b740401c
+evacuate : BLOCK b7404000
+evacuate : big
+evacuate : *src  b740024c
+evacuate : BLOCK b7400000
+evacuate : small
+evacuate_small : pointer forwarded : b740024c
+find_small_object : scavenging object : b740f1e0 size : 00000032
+find_small_object : old scavenging object : b740f1e0 size : 00000032
+find_small_object : new scavenging object : b740f2ac size : 00000032
+scavenge_small : obj   b740f1e0 nptr: 4 (s:50 n:4)
+evacuate : *src  b740033c
+evacuate : BLOCK b7400000
+evacuate : small
+copy_obj : new_ptr b740f40c to_space b740f000 src_obj b740033c size 8
+size : 00000008(8) nptrs : 00000000(0) (ptr : 00000020)
+b7400338 : 20 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b7400348 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b7400358 : 00 00 00 00 ad f2 40 b7 
+size : 00000008(8) nptrs : 00000000(0) (ptr : 00000020)
+b740f408 : 20 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740f418 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740f428 : 00 00 00 00 00 00 00 00 
+evacuate_small : evacuated. the old object is now as below:
+ptr : b740f40d
+b7400338 : 0d f4 40 b7 00 00 00 00 00 00 00 00 00 00 00 00
+b7400348 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b7400358 : 00 00 00 00 ad f2 40 b7 
+evacuate : *src  b740501c
+evacuate : BLOCK b7405000
+evacuate : big
+evacuate : *src  b740033c
+evacuate : BLOCK b7400000
+evacuate : small
+evacuate_small : pointer forwarded : b740033c
+evacuate : *src  b740501c
+evacuate : BLOCK b7405000
+evacuate : big
+find_small_object : scavenging object : b740f2ac size : 0000003c
+find_small_object : old scavenging object : b740f2ac size : 0000003c
+find_small_object : new scavenging object : b740f3a0 size : 0000003c
+scavenge_small : obj   b740f2ac nptr: 5 (s:60 n:5)
+evacuate : *src  b7400454
+evacuate : BLOCK b7400000
+evacuate : small
+copy_obj : new_ptr b740f430 to_space b740f000 src_obj b7400454 size 8
+size : 00000008(8) nptrs : 00000000(0) (ptr : 00000020)
+b7400450 : 20 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b7400460 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b7400470 : 00 00 00 00 20 00 00 00 
+size : 00000008(8) nptrs : 00000000(0) (ptr : 00000020)
+b740f42c : 20 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740f43c : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740f44c : 00 00 00 00 00 00 00 00 
+evacuate_small : evacuated. the old object is now as below:
+ptr : b740f431
+b7400450 : 31 f4 40 b7 00 00 00 00 00 00 00 00 00 00 00 00
+b7400460 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b7400470 : 00 00 00 00 20 00 00 00 
+evacuate : *src  b740601c
+evacuate : BLOCK b7406000
+evacuate : big
+evacuate : *src  b7400454
+evacuate : BLOCK b7400000
+evacuate : small
+evacuate_small : pointer forwarded : b7400454
+evacuate : *src  b740601c
+evacuate : BLOCK b7406000
+evacuate : big
+evacuate : *src  b7400454
+evacuate : BLOCK b7400000
+evacuate : small
+evacuate_small : pointer forwarded : b7400454
+find_small_object : scavenging object : b740f3a0 size : 00000008
+find_small_object : old scavenging object : b740f3a0 size : 00000008
+find_small_object : new scavenging object : b740f3c4 size : 00000008
+scavenge_small : obj   b740f3a0 nptr: 0 (s:8 n:0)
+find_small_object : scavenging object : b740f3c4 size : 00000008
+find_small_object : old scavenging object : b740f3c4 size : 00000008
+find_small_object : new scavenging object : b740f3e8 size : 00000008
+scavenge_small : obj   b740f3c4 nptr: 0 (s:8 n:0)
+find_small_object : scavenging object : b740f3e8 size : 00000008
+find_small_object : old scavenging object : b740f3e8 size : 00000008
+find_small_object : new scavenging object : b740f40c size : 00000008
+scavenge_small : obj   b740f3e8 nptr: 0 (s:8 n:0)
+find_small_object : scavenging object : b740f40c size : 00000008
+find_small_object : old scavenging object : b740f40c size : 00000008
+find_small_object : new scavenging object : b740f430 size : 00000008
+scavenge_small : obj   b740f40c nptr: 0 (s:8 n:0)
+find_small_object : scavenging object : b740f430 size : 00000008
+find_small_object : old scavenging object : b740f430 size : 00000008
+find_small_object : new scavenging object : b740f454 size : 00000008
+scavenge_small : obj   b740f430 nptr: 0 (s:8 n:0)
+find_small_object : scavenging object : b740f454 size : 00000000
+scavenge_big : obj   b740701c
+evacuate : *src  b7400478
+evacuate : BLOCK b7400000
+evacuate : small
+copy_obj : new_ptr b740f454 to_space b740f000 src_obj b7400478 size 8
+size : 00000008(8) nptrs : 00000000(0) (ptr : 00000020)
+b7400474 : 20 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b7400484 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b7400494 : 00 00 00 00 20 00 00 00 
+size : 00000008(8) nptrs : 00000000(0) (ptr : 00000020)
+b740f450 : 20 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740f460 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740f470 : 00 00 00 00 00 00 00 00 
+evacuate_small : evacuated. the old object is now as below:
+ptr : b740f455
+b7400474 : 55 f4 40 b7 00 00 00 00 00 00 00 00 00 00 00 00
+b7400484 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b7400494 : 00 00 00 00 20 00 00 00 
+evacuate : *src  b740801c
+evacuate : BLOCK b7408000
+evacuate : big
+evacuate : *src  b7400478
+evacuate : BLOCK b7400000
+evacuate : small
+evacuate_small : pointer forwarded : b7400478
+evacuate : *src  b740801c
+evacuate : BLOCK b7408000
+evacuate : big
+evacuate : *src  b7400478
+evacuate : BLOCK b7400000
+evacuate : small
+evacuate_small : pointer forwarded : b7400478
+evacuate : *src  b740801c
+evacuate : BLOCK b7408000
+evacuate : big
+find_small_object : scavenging object : b740f454 size : 00000008
+find_small_object : old scavenging object : b740f454 size : 00000008
+find_small_object : new scavenging object : b740f478 size : 00000008
+scavenge_small : obj   b740f454 nptr: 0 (s:8 n:0)
+find_small_object : scavenging object : b740f478 size : 00000000
+scavenge_big : obj   b740901c
+evacuate : *src  b740049c
+evacuate : BLOCK b7400000
+evacuate : small
+copy_obj : new_ptr b740f478 to_space b740f000 src_obj b740049c size 8
+size : 00000008(8) nptrs : 00000000(0) (ptr : 00000020)
+b7400498 : 20 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b74004a8 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b74004b8 : 00 00 00 00 20 00 00 00 
+size : 00000008(8) nptrs : 00000000(0) (ptr : 00000020)
+b740f474 : 20 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740f484 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740f494 : 00 00 00 00 00 00 00 00 
+evacuate_small : evacuated. the old object is now as below:
+ptr : b740f479
+b7400498 : 79 f4 40 b7 00 00 00 00 00 00 00 00 00 00 00 00
+b74004a8 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b74004b8 : 00 00 00 00 20 00 00 00 
+evacuate : *src  b740a01c
+evacuate : BLOCK b740a000
+evacuate : big
+evacuate : *src  b740049c
+evacuate : BLOCK b7400000
+evacuate : small
+evacuate_small : pointer forwarded : b740049c
+evacuate : *src  b740a01c
+evacuate : BLOCK b740a000
+evacuate : big
+evacuate : *src  b740049c
+evacuate : BLOCK b7400000
+evacuate : small
+evacuate_small : pointer forwarded : b740049c
+evacuate : *src  b740a01c
+evacuate : BLOCK b740a000
+evacuate : big
+evacuate : *src  b740049c
+evacuate : BLOCK b7400000
+evacuate : small
+evacuate_small : pointer forwarded : b740049c
+find_small_object : scavenging object : b740f478 size : 00000008
+find_small_object : old scavenging object : b740f478 size : 00000008
+find_small_object : new scavenging object : b740f49c size : 00000008
+scavenge_small : obj   b740f478 nptr: 0 (s:8 n:0)
+find_small_object : scavenging object : b740f49c size : 00000000
+scavenge_big : obj   b740b01c
+evacuate : *src  b74004c0
+evacuate : BLOCK b7400000
+evacuate : small
+copy_obj : new_ptr b740f49c to_space b740f000 src_obj b74004c0 size 8
+size : 00000008(8) nptrs : 00000000(0) (ptr : 00000020)
+b74004bc : 20 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b74004cc : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b74004dc : 00 00 00 00 20 00 00 00 
+size : 00000008(8) nptrs : 00000000(0) (ptr : 00000020)
+b740f498 : 20 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740f4a8 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740f4b8 : 00 00 00 00 00 00 00 00 
+evacuate_small : evacuated. the old object is now as below:
+ptr : b740f49d
+b74004bc : 9d f4 40 b7 00 00 00 00 00 00 00 00 00 00 00 00
+b74004cc : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b74004dc : 00 00 00 00 20 00 00 00 
+evacuate : *src  b740c01c
+evacuate : BLOCK b740c000
+evacuate : big
+evacuate : *src  b74004c0
+evacuate : BLOCK b7400000
+evacuate : small
+evacuate_small : pointer forwarded : b74004c0
+evacuate : *src  b740c01c
+evacuate : BLOCK b740c000
+evacuate : big
+evacuate : *src  b74004c0
+evacuate : BLOCK b7400000
+evacuate : small
+evacuate_small : pointer forwarded : b74004c0
+evacuate : *src  b740c01c
+evacuate : BLOCK b740c000
+evacuate : big
+evacuate : *src  b74004c0
+evacuate : BLOCK b7400000
+evacuate : small
+evacuate_small : pointer forwarded : b74004c0
+evacuate : *src  b740c01c
+evacuate : BLOCK b740c000
+evacuate : big
+find_small_object : scavenging object : b740f49c size : 00000008
+find_small_object : old scavenging object : b740f49c size : 00000008
+find_small_object : new scavenging object : b740f4c0 size : 00000008
+scavenge_small : obj   b740f49c nptr: 0 (s:8 n:0)
+find_small_object : scavenging object : b740f4c0 size : 00000000
+scavenge_big : obj   b740d01c
+evacuate : *src  b74004e4
+evacuate : BLOCK b7400000
+evacuate : small
+copy_obj : new_ptr b740f4c0 to_space b740f000 src_obj b74004e4 size 8
+size : 00000008(8) nptrs : 00000000(0) (ptr : 00000020)
+b74004e0 : 20 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b74004f0 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b7400500 : 00 00 00 00 00 00 00 00 
+size : 00000008(8) nptrs : 00000000(0) (ptr : 00000020)
+b740f4bc : 20 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740f4cc : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740f4dc : 00 00 00 00 00 00 00 00 
+evacuate_small : evacuated. the old object is now as below:
+ptr : b740f4c1
+b74004e0 : c1 f4 40 b7 00 00 00 00 00 00 00 00 00 00 00 00
+b74004f0 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b7400500 : 00 00 00 00 00 00 00 00 
+evacuate : *src  b740e01c
+evacuate : BLOCK b740e000
+evacuate : big
+evacuate : *src  b74004e4
+evacuate : BLOCK b7400000
+evacuate : small
+evacuate_small : pointer forwarded : b74004e4
+evacuate : *src  b740e01c
+evacuate : BLOCK b740e000
+evacuate : big
+evacuate : *src  b74004e4
+evacuate : BLOCK b7400000
+evacuate : small
+evacuate_small : pointer forwarded : b74004e4
+evacuate : *src  b740e01c
+evacuate : BLOCK b740e000
+evacuate : big
+evacuate : *src  b74004e4
+evacuate : BLOCK b7400000
+evacuate : small
+evacuate_small : pointer forwarded : b74004e4
+evacuate : *src  b740e01c
+evacuate : BLOCK b740e000
+evacuate : big
+evacuate : *src  b74004e4
+evacuate : BLOCK b7400000
+evacuate : small
+evacuate_small : pointer forwarded : b74004e4
+find_small_object : scavenging object : b740f4c0 size : 00000008
+find_small_object : old scavenging object : b740f4c0 size : 00000008
+find_small_object : new scavenging object : b740f4e4 size : 00000008
+scavenge_small : obj   b740f4c0 nptr: 0 (s:8 n:0)
+find_small_object : scavenging object : b740f4e4 size : 00000000
+scavenge_big : obj   b740301c
+find_small_object : scavenging object : b740f4e4 size : 00000000
+scavenge_big : obj   b740401c
+find_small_object : scavenging object : b740f4e4 size : 00000000
+scavenge_big : obj   b740501c
+find_small_object : scavenging object : b740f4e4 size : 00000000
+scavenge_big : obj   b740601c
+find_small_object : scavenging object : b740f4e4 size : 00000000
+scavenge_big : obj   b740801c
+find_small_object : scavenging object : b740f4e4 size : 00000000
+scavenge_big : obj   b740a01c
+find_small_object : scavenging object : b740f4e4 size : 00000000
+scavenge_big : obj   b740c01c
+find_small_object : scavenging object : b740f4e4 size : 00000000
+scavenge_big : obj   b740e01c
+find_small_object : scavenging object : b740f4e4 size : 00000000
+find_big_object : no object found: big object reached to the tail
+========================================================
+perform_gc : small 0000000000000010(16) big 000000000000000c(12)
+========================================================
+-perform_gc : b7402000 dead big
+-perform_gc : b7401000 dead big
++perform_gc : b7407000 live big
++perform_gc : b7409000 live big
++perform_gc : b740b000 live big
++perform_gc : b740d000 live big
++perform_gc : b7403000 live big
++perform_gc : b7404000 live big
++perform_gc : b7405000 live big
++perform_gc : b7406000 live big
++perform_gc : b7408000 live big
++perform_gc : b740a000 live big
++perform_gc : b740c000 live big
++perform_gc : b740e000 live big
+-perform_gc : b7400000 dead small
++perform_gc : b740f000 live small
+========================================================
+perform_gc : end
+========================================================
+evacuate : *src  b740f014
+evacuate : BLOCK b740f000
+evacuate : small
+copy_obj : new_ptr b7400014 to_space b7400000 src_obj b740f014 size 10
+size : 0000000a(10) nptrs : 0000000a(10) (ptr : 0000a028)
+b740f010 : 28 a0 00 00 40 f0 40 b7 6c f0 40 b7 c0 f0 40 b7
+b740f020 : 3c f1 40 b7 e0 f1 40 b7 ac f2 40 b7 1c 70 40 b7
+b740f030 : 1c 90 40 b7 1c b0 40 b7 1c d0 40 b7 28 00 00 00
+size : 0000000a(10) nptrs : 0000000a(10) (ptr : 0000a028)
+b7400010 : 28 a0 00 00 40 f0 40 b7 6c f0 40 b7 c0 f0 40 b7
+b7400020 : 3c f1 40 b7 e0 f1 40 b7 ac f2 40 b7 1c 70 40 b7
+b7400030 : 1c 90 40 b7 1c b0 40 b7 1c d0 40 b7 00 00 00 00
+evacuate_small : evacuated. the old object is now as below:
+ptr : b7400015
+b740f010 : 15 00 40 b7 40 f0 40 b7 6c f0 40 b7 c0 f0 40 b7
+b740f020 : 3c f1 40 b7 e0 f1 40 b7 ac f2 40 b7 1c 70 40 b7
+b740f030 : 1c 90 40 b7 1c b0 40 b7 1c d0 40 b7 28 00 00 00
+find_small_object : to_space : b7400000
+find_small_object : scavenging object : b7400014 size : 0000000a
+find_small_object : old scavenging object : b7400014 size : 0000000a
+find_small_object : new scavenging object : b7400040 size : 0000000a
+scavenge_small : obj   b7400014 nptr: 10 (s:10 n:10)
+evacuate : *src  b740f040
+evacuate : BLOCK b740f000
+evacuate : small
+copy_obj : new_ptr b7400040 to_space b7400000 src_obj b740f040 size 10
+size : 0000000a(10) nptrs : 00000000(0) (ptr : 00000028)
+b740f03c : 28 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740f04c : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740f05c : 00 00 00 00 00 00 00 00 00 00 00 00 50 10 00 00
+size : 0000000a(10) nptrs : 00000000(0) (ptr : 00000028)
+b740003c : 28 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740004c : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740005c : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+evacuate_small : evacuated. the old object is now as below:
+ptr : b7400041
+b740f03c : 41 00 40 b7 00 00 00 00 00 00 00 00 00 00 00 00
+b740f04c : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740f05c : 00 00 00 00 00 00 00 00 00 00 00 00 50 10 00 00
+evacuate : *src  b740f06c
+evacuate : BLOCK b740f000
+evacuate : small
+copy_obj : new_ptr b740006c to_space b7400000 src_obj b740f06c size 20
+size : 00000014(20) nptrs : 00000001(1) (ptr : 00001050)
+b740f068 : 50 10 00 00 a0 f3 40 b7 00 00 00 00 00 00 00 00
+b740f078 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+       :
+b740f098 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740f0a8 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740f0b8 : 00 00 00 00 78 20 00 00 
+size : 00000014(20) nptrs : 00000001(1) (ptr : 00001050)
+b7400068 : 50 10 00 00 a0 f3 40 b7 00 00 00 00 00 00 00 00
+b7400078 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+       :
+b7400098 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b74000a8 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b74000b8 : 00 00 00 00 00 00 00 00 
+evacuate_small : evacuated. the old object is now as below:
+ptr : b740006d
+b740f068 : 6d 00 40 b7 a0 f3 40 b7 00 00 00 00 00 00 00 00
+b740f078 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+       :
+b740f098 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740f0a8 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740f0b8 : 00 00 00 00 78 20 00 00 
+evacuate : *src  b740f0c0
+evacuate : BLOCK b740f000
+evacuate : small
+copy_obj : new_ptr b74000c0 to_space b7400000 src_obj b740f0c0 size 30
+size : 0000001e(30) nptrs : 00000002(2) (ptr : 00002078)
+b740f0bc : 78 20 00 00 c4 f3 40 b7 1c 30 40 b7 00 00 00 00
+b740f0cc : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+       :
+b740f11c : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740f12c : 00 00 00 00 00 00 00 00 00 00 00 00 a0 30 00 00
+size : 0000001e(30) nptrs : 00000002(2) (ptr : 00002078)
+b74000bc : 78 20 00 00 c4 f3 40 b7 1c 30 40 b7 00 00 00 00
+b74000cc : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+       :
+b740011c : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740012c : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+evacuate_small : evacuated. the old object is now as below:
+ptr : b74000c1
+b740f0bc : c1 00 40 b7 c4 f3 40 b7 1c 30 40 b7 00 00 00 00
+b740f0cc : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+       :
+b740f11c : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740f12c : 00 00 00 00 00 00 00 00 00 00 00 00 a0 30 00 00
+evacuate : *src  b740f13c
+evacuate : BLOCK b740f000
+evacuate : small
+copy_obj : new_ptr b740013c to_space b7400000 src_obj b740f13c size 40
+size : 00000028(40) nptrs : 00000003(3) (ptr : 000030a0)
+b740f138 : a0 30 00 00 e8 f3 40 b7 1c 40 40 b7 48 02 40 b7
+b740f148 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+       :
+b740f1b8 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740f1c8 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740f1d8 : 00 00 00 00 c8 40 00 00 
+size : 00000028(40) nptrs : 00000003(3) (ptr : 000030a0)
+b7400138 : a0 30 00 00 e8 f3 40 b7 1c 40 40 b7 48 02 40 b7
+b7400148 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+       :
+b74001b8 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b74001c8 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b74001d8 : 00 00 00 00 00 00 00 00 
+evacuate_small : evacuated. the old object is now as below:
+ptr : b740013d
+b740f138 : 3d 01 40 b7 e8 f3 40 b7 1c 40 40 b7 48 02 40 b7
+b740f148 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+       :
+b740f1b8 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740f1c8 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740f1d8 : 00 00 00 00 c8 40 00 00 
+evacuate : *src  b740f1e0
+evacuate : BLOCK b740f000
+evacuate : small
+copy_obj : new_ptr b74001e0 to_space b7400000 src_obj b740f1e0 size 50
+size : 00000032(50) nptrs : 00000004(4) (ptr : 000040c8)
+b740f1dc : c8 40 00 00 0c f4 40 b7 1c 50 40 b7 38 03 40 b7
+b740f1ec : 1c 50 40 b7 00 00 00 00 00 00 00 00 00 00 00 00
+       :
+b740f28c : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740f29c : 00 00 00 00 00 00 00 00 00 00 00 00 f0 50 00 00
+size : 00000032(50) nptrs : 00000004(4) (ptr : 000040c8)
+b74001dc : c8 40 00 00 0c f4 40 b7 1c 50 40 b7 38 03 40 b7
+b74001ec : 1c 50 40 b7 00 00 00 00 00 00 00 00 00 00 00 00
+       :
+b740028c : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740029c : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+evacuate_small : evacuated. the old object is now as below:
+ptr : b74001e1
+b740f1dc : e1 01 40 b7 0c f4 40 b7 1c 50 40 b7 38 03 40 b7
+b740f1ec : 1c 50 40 b7 00 00 00 00 00 00 00 00 00 00 00 00
+       :
+b740f28c : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740f29c : 00 00 00 00 00 00 00 00 00 00 00 00 f0 50 00 00
+evacuate : *src  b740f2ac
+evacuate : BLOCK b740f000
+evacuate : small
+copy_obj : new_ptr b74002ac to_space b7400000 src_obj b740f2ac size 60
+size : 0000003c(60) nptrs : 00000005(5) (ptr : 000050f0)
+b740f2a8 : f0 50 00 00 30 f4 40 b7 1c 60 40 b7 50 04 40 b7
+b740f2b8 : 1c 60 40 b7 50 04 40 b7 00 00 00 00 00 00 00 00
+       :
+b740f378 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740f388 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740f398 : 00 00 00 00 20 00 00 00 
+size : 0000003c(60) nptrs : 00000005(5) (ptr : 000050f0)
+b74002a8 : f0 50 00 00 30 f4 40 b7 1c 60 40 b7 50 04 40 b7
+b74002b8 : 1c 60 40 b7 50 04 40 b7 00 00 00 00 00 00 00 00
+       :
+b7400378 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b7400388 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b7400398 : 00 00 00 00 00 00 00 00 
+evacuate_small : evacuated. the old object is now as below:
+ptr : b74002ad
+b740f2a8 : ad 02 40 b7 30 f4 40 b7 1c 60 40 b7 50 04 40 b7
+b740f2b8 : 1c 60 40 b7 50 04 40 b7 00 00 00 00 00 00 00 00
+       :
+b740f378 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740f388 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740f398 : 00 00 00 00 20 00 00 00 
+evacuate : *src  b740701c
+evacuate : BLOCK b7407000
+evacuate : big
+evacuate : *src  b740901c
+evacuate : BLOCK b7409000
+evacuate : big
+evacuate : *src  b740b01c
+evacuate : BLOCK b740b000
+evacuate : big
+evacuate : *src  b740d01c
+evacuate : BLOCK b740d000
+evacuate : big
+find_small_object : scavenging object : b7400040 size : 0000000a
+find_small_object : old scavenging object : b7400040 size : 0000000a
+find_small_object : new scavenging object : b740006c size : 0000000a
+scavenge_small : obj   b7400040 nptr: 0 (s:10 n:0)
+find_small_object : scavenging object : b740006c size : 00000014
+find_small_object : old scavenging object : b740006c size : 00000014
+find_small_object : new scavenging object : b74000c0 size : 00000014
+scavenge_small : obj   b740006c nptr: 1 (s:20 n:1)
+evacuate : *src  b740f3a0
+evacuate : BLOCK b740f000
+evacuate : small
+copy_obj : new_ptr b74003a0 to_space b7400000 src_obj b740f3a0 size 8
+size : 00000008(8) nptrs : 00000000(0) (ptr : 00000020)
+b740f39c : 20 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740f3ac : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740f3bc : 00 00 00 00 20 00 00 00 
+size : 00000008(8) nptrs : 00000000(0) (ptr : 00000020)
+b740039c : 20 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b74003ac : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b74003bc : 00 00 00 00 00 00 00 00 
+evacuate_small : evacuated. the old object is now as below:
+ptr : b74003a1
+b740f39c : a1 03 40 b7 00 00 00 00 00 00 00 00 00 00 00 00
+b740f3ac : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740f3bc : 00 00 00 00 20 00 00 00 
+find_small_object : scavenging object : b74000c0 size : 0000001e
+find_small_object : old scavenging object : b74000c0 size : 0000001e
+find_small_object : new scavenging object : b740013c size : 0000001e
+scavenge_small : obj   b74000c0 nptr: 2 (s:30 n:2)
+evacuate : *src  b740f3c4
+evacuate : BLOCK b740f000
+evacuate : small
+copy_obj : new_ptr b74003c4 to_space b7400000 src_obj b740f3c4 size 8
+size : 00000008(8) nptrs : 00000000(0) (ptr : 00000020)
+b740f3c0 : 20 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740f3d0 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740f3e0 : 00 00 00 00 20 00 00 00 
+size : 00000008(8) nptrs : 00000000(0) (ptr : 00000020)
+b74003c0 : 20 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b74003d0 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b74003e0 : 00 00 00 00 00 00 00 00 
+evacuate_small : evacuated. the old object is now as below:
+ptr : b74003c5
+b740f3c0 : c5 03 40 b7 00 00 00 00 00 00 00 00 00 00 00 00
+b740f3d0 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740f3e0 : 00 00 00 00 20 00 00 00 
+evacuate : *src  b740301c
+evacuate : BLOCK b7403000
+evacuate : big
+find_small_object : scavenging object : b740013c size : 00000028
+find_small_object : old scavenging object : b740013c size : 00000028
+find_small_object : new scavenging object : b74001e0 size : 00000028
+scavenge_small : obj   b740013c nptr: 3 (s:40 n:3)
+evacuate : *src  b740f3e8
+evacuate : BLOCK b740f000
+evacuate : small
+copy_obj : new_ptr b74003e8 to_space b7400000 src_obj b740f3e8 size 8
+size : 00000008(8) nptrs : 00000000(0) (ptr : 00000020)
+b740f3e4 : 20 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740f3f4 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740f404 : 00 00 00 00 20 00 00 00 
+size : 00000008(8) nptrs : 00000000(0) (ptr : 00000020)
+b74003e4 : 20 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b74003f4 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b7400404 : 00 00 00 00 00 00 00 00 
+evacuate_small : evacuated. the old object is now as below:
+ptr : b74003e9
+b740f3e4 : e9 03 40 b7 00 00 00 00 00 00 00 00 00 00 00 00
+b740f3f4 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740f404 : 00 00 00 00 20 00 00 00 
+evacuate : *src  b740401c
+evacuate : BLOCK b7404000
+evacuate : big
+evacuate : *src  b7400248
+evacuate : BLOCK b7400000
+evacuate : small
+copy_obj : new_ptr b740040c to_space b7400000 src_obj b7400248 size 0
+size : 00000000(0) nptrs : 00000000(0) (ptr : 00000000)
+b7400244 : 00 00 00 00 00 00 00 00 
+size : 00000000(0) nptrs : 00000000(0) (ptr : 00000000)
+b7400408 : 00 00 00 00 00 00 00 00 
+evacuate_small : evacuated. the old object is now as below:
+ptr : b740040d
+b7400244 : 0d 04 40 b7 00 00 00 00 
+find_small_object : scavenging object : b74001e0 size : 00000032
+find_small_object : old scavenging object : b74001e0 size : 00000032
+find_small_object : new scavenging object : b74002ac size : 00000032
+scavenge_small : obj   b74001e0 nptr: 4 (s:50 n:4)
+evacuate : *src  b740f40c
+evacuate : BLOCK b740f000
+evacuate : small
+copy_obj : new_ptr b7400410 to_space b7400000 src_obj b740f40c size 8
+size : 00000008(8) nptrs : 00000000(0) (ptr : 00000020)
+b740f408 : 20 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740f418 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740f428 : 00 00 00 00 20 00 00 00 
+size : 00000008(8) nptrs : 00000000(0) (ptr : 00000020)
+b740040c : 20 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740041c : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740042c : 00 00 00 00 00 00 00 00 
+evacuate_small : evacuated. the old object is now as below:
+ptr : b7400411
+b740f408 : 11 04 40 b7 00 00 00 00 00 00 00 00 00 00 00 00
+b740f418 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740f428 : 00 00 00 00 20 00 00 00 
+evacuate : *src  b740501c
+evacuate : BLOCK b7405000
+evacuate : big
+evacuate : *src  b7400338
+evacuate : BLOCK b7400000
+evacuate : small
+copy_obj : new_ptr b7400434 to_space b7400000 src_obj b7400338 size 0
+size : 00000000(0) nptrs : 00000000(0) (ptr : 00000000)
+b7400334 : 00 00 00 00 00 00 00 00 
+size : 00000000(0) nptrs : 00000000(0) (ptr : 00000000)
+b7400430 : 00 00 00 00 00 00 00 00 
+evacuate_small : evacuated. the old object is now as below:
+ptr : b7400435
+b7400334 : 35 04 40 b7 00 00 00 00 
+evacuate : *src  b740501c
+evacuate : BLOCK b7405000
+evacuate : big
+find_small_object : scavenging object : b74002ac size : 0000003c
+find_small_object : old scavenging object : b74002ac size : 0000003c
+find_small_object : new scavenging object : b74003a0 size : 0000003c
+scavenge_small : obj   b74002ac nptr: 5 (s:60 n:5)
+evacuate : *src  b740f430
+evacuate : BLOCK b740f000
+evacuate : small
+copy_obj : new_ptr b7400438 to_space b7400000 src_obj b740f430 size 8
+size : 00000008(8) nptrs : 00000000(0) (ptr : 00000020)
+b740f42c : 20 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740f43c : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740f44c : 00 00 00 00 20 00 00 00 
+size : 00000008(8) nptrs : 00000000(0) (ptr : 00000020)
+b7400434 : 20 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b7400444 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b7400454 : 00 00 00 00 00 00 00 00 
+evacuate_small : evacuated. the old object is now as below:
+ptr : b7400439
+b740f42c : 39 04 40 b7 00 00 00 00 00 00 00 00 00 00 00 00
+b740f43c : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740f44c : 00 00 00 00 20 00 00 00 
+evacuate : *src  b740601c
+evacuate : BLOCK b7406000
+evacuate : big
+evacuate : *src  b7400450
+evacuate : BLOCK b7400000
+evacuate : small
+copy_obj : new_ptr b740045c to_space b7400000 src_obj b7400450 size 0
+size : 00000000(0) nptrs : 00000000(0) (ptr : 00000000)
+b740044c : 00 00 00 00 00 00 00 00 
+size : 00000000(0) nptrs : 00000000(0) (ptr : 00000000)
+b7400458 : 00 00 00 00 00 00 00 00 
+evacuate_small : evacuated. the old object is now as below:
+ptr : b740045d
+b740044c : 5d 04 40 b7 00 00 00 00 
+evacuate : *src  b740601c
+evacuate : BLOCK b7406000
+evacuate : big
+evacuate : *src  b7400450
+evacuate : BLOCK b7400000
+evacuate : small
+evacuate_small : pointer forwarded : b7400450
+find_small_object : scavenging object : b74003a0 size : 00000008
+find_small_object : old scavenging object : b74003a0 size : 00000008
+find_small_object : new scavenging object : b74003c4 size : 00000008
+scavenge_small : obj   b74003a0 nptr: 0 (s:8 n:0)
+find_small_object : scavenging object : b74003c4 size : 00000008
+find_small_object : old scavenging object : b74003c4 size : 00000008
+find_small_object : new scavenging object : b74003e8 size : 00000008
+scavenge_small : obj   b74003c4 nptr: 0 (s:8 n:0)
+find_small_object : scavenging object : b74003e8 size : 00000008
+find_small_object : old scavenging object : b74003e8 size : 00000008
+find_small_object : new scavenging object : b740040c size : 00000008
+scavenge_small : obj   b74003e8 nptr: 0 (s:8 n:0)
+find_small_object : scavenging object : b740040c size : 00000000
+scavenge_big : obj   b740701c
+evacuate : *src  b740f454
+evacuate : BLOCK b740f000
+evacuate : small
+copy_obj : new_ptr b7400460 to_space b7400000 src_obj b740f454 size 8
+size : 00000008(8) nptrs : 00000000(0) (ptr : 00000020)
+b740f450 : 20 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740f460 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740f470 : 00 00 00 00 20 00 00 00 
+size : 00000008(8) nptrs : 00000000(0) (ptr : 00000020)
+b740045c : 20 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740046c : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740047c : 00 00 00 00 00 00 00 00 
+evacuate_small : evacuated. the old object is now as below:
+ptr : b7400461
+b740f450 : 61 04 40 b7 00 00 00 00 00 00 00 00 00 00 00 00
+b740f460 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740f470 : 00 00 00 00 20 00 00 00 
+evacuate : *src  b740801c
+evacuate : BLOCK b7408000
+evacuate : big
+evacuate : *src  b7400474
+evacuate : BLOCK b7400000
+evacuate : small
+copy_obj : new_ptr b7400484 to_space b7400000 src_obj b7400474 size 0
+size : 00000000(0) nptrs : 00000000(0) (ptr : 00000000)
+b7400470 : 00 00 00 00 00 00 00 00 
+size : 00000000(0) nptrs : 00000000(0) (ptr : 00000000)
+b7400480 : 00 00 00 00 00 00 00 00 
+evacuate_small : evacuated. the old object is now as below:
+ptr : b7400485
+b7400470 : 85 04 40 b7 00 00 00 00 
+evacuate : *src  b740801c
+evacuate : BLOCK b7408000
+evacuate : big
+evacuate : *src  b7400474
+evacuate : BLOCK b7400000
+evacuate : small
+evacuate_small : pointer forwarded : b7400474
+evacuate : *src  b740801c
+evacuate : BLOCK b7408000
+evacuate : big
+find_small_object : scavenging object : b740040c size : 00000000
+scavenge_big : obj   b740901c
+evacuate : *src  b740f478
+evacuate : BLOCK b740f000
+evacuate : small
+copy_obj : new_ptr b7400488 to_space b7400000 src_obj b740f478 size 8
+size : 00000008(8) nptrs : 00000000(0) (ptr : 00000020)
+b740f474 : 20 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740f484 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740f494 : 00 00 00 00 20 00 00 00 
+size : 00000008(8) nptrs : 00000000(0) (ptr : 00000020)
+b7400484 : 20 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b7400494 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b74004a4 : 00 00 00 00 00 00 00 00 
+evacuate_small : evacuated. the old object is now as below:
+ptr : b7400489
+b740f474 : 89 04 40 b7 00 00 00 00 00 00 00 00 00 00 00 00
+b740f484 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740f494 : 00 00 00 00 20 00 00 00 
+evacuate : *src  b740a01c
+evacuate : BLOCK b740a000
+evacuate : big
+evacuate : *src  b7400498
+evacuate : BLOCK b7400000
+evacuate : small
+copy_obj : new_ptr b74004ac to_space b7400000 src_obj b7400498 size 0
+size : 00000000(0) nptrs : 00000000(0) (ptr : 00000000)
+b7400494 : 00 00 00 00 00 00 00 00 
+size : 00000000(0) nptrs : 00000000(0) (ptr : 00000000)
+b74004a8 : 00 00 00 00 00 00 00 00 
+evacuate_small : evacuated. the old object is now as below:
+ptr : b74004ad
+b7400494 : ad 04 40 b7 00 00 00 00 
+evacuate : *src  b740a01c
+evacuate : BLOCK b740a000
+evacuate : big
+evacuate : *src  b7400498
+evacuate : BLOCK b7400000
+evacuate : small
+evacuate_small : pointer forwarded : b7400498
+evacuate : *src  b740a01c
+evacuate : BLOCK b740a000
+evacuate : big
+evacuate : *src  b7400498
+evacuate : BLOCK b7400000
+evacuate : small
+evacuate_small : pointer forwarded : b7400498
+find_small_object : scavenging object : b740040c size : 00000000
+scavenge_big : obj   b740b01c
+evacuate : *src  b740f49c
+evacuate : BLOCK b740f000
+evacuate : small
+copy_obj : new_ptr b74004b0 to_space b7400000 src_obj b740f49c size 8
+size : 00000008(8) nptrs : 00000000(0) (ptr : 00000020)
+b740f498 : 20 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740f4a8 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740f4b8 : 00 00 00 00 20 00 00 00 
+size : 00000008(8) nptrs : 00000000(0) (ptr : 00000020)
+b74004ac : 20 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b74004bc : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b74004cc : 00 00 00 00 00 00 00 00 
+evacuate_small : evacuated. the old object is now as below:
+ptr : b74004b1
+b740f498 : b1 04 40 b7 00 00 00 00 00 00 00 00 00 00 00 00
+b740f4a8 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740f4b8 : 00 00 00 00 20 00 00 00 
+evacuate : *src  b740c01c
+evacuate : BLOCK b740c000
+evacuate : big
+evacuate : *src  b74004bc
+evacuate : BLOCK b7400000
+evacuate : small
+copy_obj : new_ptr b74004d4 to_space b7400000 src_obj b74004bc size 0
+size : 00000000(0) nptrs : 00000000(0) (ptr : 00000000)
+b74004b8 : 00 00 00 00 00 00 00 00 
+size : 00000000(0) nptrs : 00000000(0) (ptr : 00000000)
+b74004d0 : 00 00 00 00 00 00 00 00 
+evacuate_small : evacuated. the old object is now as below:
+ptr : b74004d5
+b74004b8 : d5 04 40 b7 00 00 00 00 
+evacuate : *src  b740c01c
+evacuate : BLOCK b740c000
+evacuate : big
+evacuate : *src  b74004bc
+evacuate : BLOCK b7400000
+evacuate : small
+evacuate_small : pointer forwarded : b74004bc
+evacuate : *src  b740c01c
+evacuate : BLOCK b740c000
+evacuate : big
+evacuate : *src  b74004bc
+evacuate : BLOCK b7400000
+evacuate : small
+evacuate_small : pointer forwarded : b74004bc
+evacuate : *src  b740c01c
+evacuate : BLOCK b740c000
+evacuate : big
+find_small_object : scavenging object : b740040c size : 00000000
+scavenge_big : obj   b740d01c
+evacuate : *src  b740f4c0
+evacuate : BLOCK b740f000
+evacuate : small
+copy_obj : new_ptr b74004d8 to_space b7400000 src_obj b740f4c0 size 8
+size : 00000008(8) nptrs : 00000000(0) (ptr : 00000020)
+b740f4bc : 20 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740f4cc : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740f4dc : 00 00 00 00 00 00 00 00 
+size : 00000008(8) nptrs : 00000000(0) (ptr : 00000020)
+b74004d4 : 20 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b74004e4 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b74004f4 : 00 00 00 00 00 00 00 00 
+evacuate_small : evacuated. the old object is now as below:
+ptr : b74004d9
+b740f4bc : d9 04 40 b7 00 00 00 00 00 00 00 00 00 00 00 00
+b740f4cc : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b740f4dc : 00 00 00 00 00 00 00 00 
+evacuate : *src  b740e01c
+evacuate : BLOCK b740e000
+evacuate : big
+evacuate : *src  b74004e0
+evacuate : BLOCK b7400000
+evacuate : small
+copy_obj : new_ptr b74004fc to_space b7400000 src_obj b74004e0 size 0
+size : 00000000(0) nptrs : 00000000(0) (ptr : 00000000)
+b74004dc : 00 00 00 00 00 00 00 00 
+size : 00000000(0) nptrs : 00000000(0) (ptr : 00000000)
+b74004f8 : 00 00 00 00 00 00 00 00 
+evacuate_small : evacuated. the old object is now as below:
+ptr : b74004fd
+b74004dc : fd 04 40 b7 00 00 00 00 
+evacuate : *src  b740e01c
+evacuate : BLOCK b740e000
+evacuate : big
+evacuate : *src  b74004e0
+evacuate : BLOCK b7400000
+evacuate : small
+evacuate_small : pointer forwarded : b74004e0
+evacuate : *src  b740e01c
+evacuate : BLOCK b740e000
+evacuate : big
+evacuate : *src  b74004e0
+evacuate : BLOCK b7400000
+evacuate : small
+evacuate_small : pointer forwarded : b74004e0
+evacuate : *src  b740e01c
+evacuate : BLOCK b740e000
+evacuate : big
+evacuate : *src  b74004e0
+evacuate : BLOCK b7400000
+evacuate : small
+evacuate_small : pointer forwarded : b74004e0
+find_small_object : scavenging object : b740040c size : 00000000
+scavenge_big : obj   b740301c
+find_small_object : scavenging object : b740040c size : 00000000
+scavenge_big : obj   b740401c
+find_small_object : scavenging object : b740040c size : 00000000
+scavenge_big : obj   b740501c
+find_small_object : scavenging object : b740040c size : 00000000
+scavenge_big : obj   b740601c
+find_small_object : scavenging object : b740040c size : 00000000
+scavenge_big : obj   b740801c
+find_small_object : scavenging object : b740040c size : 00000000
+scavenge_big : obj   b740a01c
+find_small_object : scavenging object : b740040c size : 00000000
+scavenge_big : obj   b740c01c
+find_small_object : scavenging object : b740040c size : 00000000
+scavenge_big : obj   b740e01c
+find_small_object : scavenging object : b740040c size : 00000000
+find_big_object : no object found: big object reached to the tail
+========================================================
+perform_gc : small 0000000000000017(23) big 000000000000000c(12)
+========================================================
++perform_gc : b7407000 live big
++perform_gc : b7409000 live big
++perform_gc : b740b000 live big
++perform_gc : b740d000 live big
++perform_gc : b7403000 live big
++perform_gc : b7404000 live big
++perform_gc : b7405000 live big
++perform_gc : b7406000 live big
++perform_gc : b7408000 live big
++perform_gc : b740a000 live big
++perform_gc : b740c000 live big
++perform_gc : b740e000 live big
+-perform_gc : b740f000 dead small
++perform_gc : b7400000 live small
+========================================================
+perform_gc : end
+========================================================
